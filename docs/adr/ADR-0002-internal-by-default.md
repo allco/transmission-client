@@ -1,45 +1,52 @@
-# ADR-0002: Everything not exposed is `internal`
+# ADR-0002: Everything that is not exposed is `internal`
 
 - **Status:** Accepted
 - **Date:** 2026-10-07
 
 ## Context
 
-Today all app code lives in the single `shared` module. We plan to split it into several Gradle
-modules later, for example `core:network`, `core:data`, `feature:connection` and
-`feature:torrents`. Kotlin's default visibility is `public`, so everything written now silently
-becomes API that other modules could depend on. That would make the split a large untangling job
-instead of a move.
+Today all app code lives in the single `shared` module. Later, we plan to split this module into
+several Gradle modules, for example `core:network`, `core:data`, `feature:connection` and
+`feature:torrents`. The default visibility in Kotlin is `public`. Thus everything that we write now
+silently becomes API that other modules could depend on. Then the split would be a large job to
+untangle the code, instead of a move.
 
-`internal` means "visible inside this Gradle module only". In one module it costs nothing. After
-a split, the compiler shows exactly which declarations have to become public API.
+`internal` means "visible inside this Gradle module only". In one module, `internal` costs nothing.
+After a split, the compiler shows exactly which declarations must become public API.
 
 ## Decision
 
-- All implementation details are `internal`: screens and their content composables, ViewModels,
-  UI state classes, repositories, data models, theme, and helpers shared across files. Use
-  `private` where something is used in one file only.
-- `public`, written as the default with no modifier, is reserved for what another Gradle module
-  or a platform host actually calls. Today that is exactly two functions:
+- All implementation details are `internal`. These details are:
+  - screens and their content Composables
+  - ViewModels
+  - UI state classes
+  - repositories
+  - data models
+  - the theme
+  - helpers that more than one file uses.
+
+  Use `private` for a declaration that only one file uses.
+- Use `public` only for declarations that another Gradle module or a platform host actually calls.
+  Write `public` as the default, with no modifier. Today, exactly two functions are `public`:
 
   | Declaration | Used by |
   |---|---|
   | `App()` in `shared/.../App.kt` | `androidApp`, `desktopApp`, `webApp` |
   | `MainViewController()` in `shared/src/iosMain/.../MainViewController.kt` | Swift, in `iosApp` |
 
-- Making something public needs a reason: a caller in another module or in Swift. Add it to the
-  table above.
-- When a module is split out, decide its public API on purpose. Only then promote the needed
+- To make a declaration public, you need a reason: a caller in another module or in Swift. Add the
+  declaration to the table above.
+- When you extract a module, decide its public API on purpose. Only then promote the necessary
   declarations from `internal` to `public`.
 
 ## Consequences
 
-- The public surface of `shared` is two functions, so the iOS framework header and the
+- The public surface of `shared` is two functions. Thus the iOS framework header and the
   cross-module API stay small.
-- Extracting a module is mostly moving files. Compile errors list what needs promoting.
-- `internal` declarations are not visible from Swift. Anything iOS code needs must be public by
-  design.
-- Tests in the same module's test source sets can still see `internal` declarations.
-- Optional follow-up: enable `explicitApi()` in the Kotlin block of each library module after a
-  split. The compiler then requires a visibility modifier on every public declaration, so nothing
-  becomes public by accident.
+- To extract a module, you mostly move files. The compile errors list the declarations to promote.
+- `internal` declarations are not visible from Swift. Anything that iOS code needs must be public
+  by design.
+- Tests in the test source sets of the same module can still see `internal` declarations.
+- Optional next step: after a split, enable `explicitApi()` in the Kotlin block of each library
+  module. The compiler then requires a visibility modifier on every public declaration. Thus
+  nothing becomes public by accident.

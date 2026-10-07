@@ -1,22 +1,22 @@
-# ADR-0006: Features are top-level packages, with the ViewModel at the root and composables in `views/`
+# ADR-0006: Features are top-level packages, with the ViewModel at the root and Composables in `views/`
 
-- **Status:** Accepted. Amended 2026-10-08: a ViewModel's UI state class gets its own file.
+- **Status:** Accepted. Amended 2026-10-08: the UI state class of a ViewModel gets its own file.
 - **Date:** 2026-10-07
 - **Supersedes:** [ADR-0004](ADR-0004-feature-package-layout.md)
 
 ## Context
 
-ADR-0004 put every feature under a `ui/` package. A feature package holds more than UI, though:
-its ViewModel and UI state now, and use cases and feature-only logic later. So a `ui/` level is
-misleading, and it adds a level of nesting that buys nothing. Each feature is also a likely
-future Gradle module ([ADR-0002](ADR-0002-internal-by-default.md)), so the top level of the source
-tree should read as the list of features.
+ADR-0004 put every feature under a `ui/` package. But a feature package holds more than UI: its
+ViewModel and UI state now, and use cases and feature-only logic later. Thus a `ui/` level is
+misleading. It also adds a level of nesting that gives no benefit. Each feature is also a likely
+future Gradle module ([ADR-0002](ADR-0002-internal-by-default.md)). Thus the top level of the
+source tree should read as the list of features.
 
 ## Decision
 
-The root package `eu.alsk.transmissionremote` contains `App.kt` and one package per **feature**,
-named after the feature. Shared, non-feature code sits next to the features in packages named by
-role:
+The root package `eu.alsk.transmissionremote` contains `App.kt` and one package for each
+**feature**. Each feature package has the name of the feature. Shared code that is not a feature
+sits next to the features, in packages named by role:
 
 ```
 eu/alsk/transmissionremote/
@@ -38,27 +38,28 @@ eu/alsk/transmissionremote/
 ```
 
 - A feature package `<feature>/` holds:
-  - the feature's ViewModel, e.g. `ConnectionViewModel.kt`, and the UI state it exposes in a
-    separate file, e.g. `ConnectionFormState.kt`;
-  - use cases and other logic used only by this feature;
-  - `views/`, with every Composable of the feature: one per file
-    ([ADR-0001](ADR-0001-one-composable-per-file.md)), plus their `<FunctionName>State` classes
-    ([ADR-0003](ADR-0003-state-class-for-composables-with-many-parameters.md)). Once `views/` holds
-    more than one view, a view with parts is a folder of its own
+  - the ViewModel of the feature, for example `ConnectionViewModel.kt`.
+  - the UI state that the ViewModel exposes, in a separate file, for example
+    `ConnectionFormState.kt`.
+  - use cases and other logic that only this feature uses.
+  - `views/`, with every Composable of the feature, one per file
+    ([ADR-0001](ADR-0001-one-composable-per-file.md)), and with their `<FunctionName>State` classes
+    ([ADR-0003](ADR-0003-state-class-for-composables-with-many-parameters.md)). When `views/` holds
+    more than one component, a component with parts is a folder of its own
     ([ADR-0005](ADR-0005-file-or-folder-per-component.md)).
 - A feature without a ViewModel, like `splash`, has only `views/`.
-- Packages: `eu.alsk.transmissionremote.<feature>` and
+- The package names are `eu.alsk.transmissionremote.<feature>` and
   `eu.alsk.transmissionremote.<feature>.views[.<component>]`.
-- Code used by more than one feature isn't a feature. It goes in a role-named package at the root:
-  `theme/` for shared UI, `data/` for data and networking. Add more of these only when a second
-  feature needs the code.
+- Code that more than one feature uses is not a feature. It goes in a role-named package at the
+  root: `theme/` for shared UI, `data/` for data and networking. Add more role-named packages only
+  when a second feature needs the code.
 - There is no `ui/` package.
 
 ## Consequences
 
-- The root of the source tree lists the features, and each one maps to a future
-  `feature:<name>` module. The role-named packages map to `core:*` modules.
-- A new feature gets a new root package. It should not be added as a sub-package of an existing
-  one.
+- The root of the source tree lists the features. Each feature maps to a future `feature:<name>`
+  module. The role-named packages map to `core:*` modules.
+- A new feature gets a new root package. You should not add it as a sub-package of an existing
+  feature.
 - A feature name and a role name must not clash. Pick feature names that describe what the user
   does (`connection`, `torrents`, `settings`).
