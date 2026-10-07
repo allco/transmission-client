@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.ui.splash.views.splashScreen
+package eu.alsk.transmissionremote.splash.views.splashScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import eu.alsk.transmissionremote.ui.theme.AppTheme
+import eu.alsk.transmissionremote.theme.AppTheme
 import kotlinx.coroutines.delay
 
 private const val SPLASH_DURATION_MS = 1500L

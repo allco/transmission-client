@@ -32,14 +32,14 @@ Example: `FormField` and `PasswordField` are used only by `ConnectionScreen`, an
 by `SplashScreen`:
 
 ```
-ui/connection/
+connection/
 ├── ConnectionViewModel.kt              fits in one file
 └── views/
     └── connectionScreen/               ConnectionScreen has parts
         ├── ConnectionScreen.kt
         ├── FormField.kt
         └── PasswordField.kt
-ui/splash/views/
+splash/views/
 └── splashScreen/
     ├── SplashScreen.kt
     └── AppLogo.kt

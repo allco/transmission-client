@@ -43,22 +43,24 @@ Inside `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/`:
 
 - `App.kt`: theme plus top-level navigation. A `rememberSaveable` enum switches
   Splash → Connection inside a `Crossfade`. There is no navigation library.
-- `ui/theme/Theme.kt`: Material 3 light/dark colour schemes (red seed). The Figma design file
-  uses the same palette as colour variables.
-- `ui/<feature>/`: the feature's ViewModel and UI state; its composables live in
-  `ui/<feature>/views/` (ADR-0004). A screen is a stateful
+- `<feature>/` (`connection/`, `splash/`): one root package per feature (ADR-0006), holding its
+  ViewModel and UI state, with its composables in `<feature>/views/`. A screen is a stateful
   `XxxScreen(viewModel = viewModel { … })` that collects a `StateFlow` and passes the state and
   callbacks to a stateless `XxxContent` in the same file.
   ViewModels come from `org.jetbrains.androidx.lifecycle`, and form state is an immutable data
   class with computed validation properties.
+- `theme/Theme.kt`: Material 3 light/dark colour schemes (red seed). The Figma design file uses
+  the same palette as colour variables.
 - `data/`: `ConnectionRepository` is an in-memory singleton, so saved connections don't persist
   yet. There is no networking code yet.
 
 ## Conventions
 
 The patterns this codebase follows are recorded as ADRs in `docs/adr/` (index: `docs/README.md`).
-Follow them, and when a new pattern is agreed, record it as a new ADR from `docs/adr/template.md`,
-named `ADR-<number>-<title-in-kebab-case>.md`.
+Follow them. Keep them current as decisions are made: when a new pattern is agreed, record it in
+the same change as a new ADR from `docs/adr/template.md`, named
+`ADR-<number>-<title-in-kebab-case>.md`. When a pattern changes, supersede or amend the affected
+ADR, and fix example paths in other ADRs and in this file.
 In short:
 
 - **ADR-0001:** each non-trivial Composable gets its own file, with its `@Preview` functions in the
@@ -71,12 +73,14 @@ In short:
 - **ADR-0003:** a Composable with more than two data parameters (not counting callbacks, `Modifier`
   or a ViewModel) takes a `<FunctionName>State` data class declared at the top of its file, e.g.
   `FormFieldState` in `FormField.kt`.
-- **ADR-0004:** each feature is a package `ui/<feature>/` holding its ViewModel and UI state, with all
-  its composables in `ui/<feature>/views/`.
 - **ADR-0005:** a component (ViewModel, view, use case, …) that fits in one file is one file. If it
   has parts used only by it, it becomes a folder named after it in camelCase
   (`connectionScreen/ConnectionScreen.kt` + `FormField.kt` + `PasswordField.kt`). A part used by a
   second component moves up and becomes a component itself.
+- **ADR-0006:** the root package holds `App.kt` and one package per feature, named after the feature
+  (`connection/`, `splash/`). There is no `ui/`. A feature keeps its ViewModel at its root and its
+  composables in `views/`. Code shared by several features goes in role-named root packages
+  (`theme/`, `data/`). ADR-0006 supersedes ADR-0004.
 
 ## Transmission RPC
 

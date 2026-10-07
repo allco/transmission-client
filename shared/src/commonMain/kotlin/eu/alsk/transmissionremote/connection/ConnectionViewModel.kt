@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.ui.connection
+package eu.alsk.transmissionremote.connection
 
 import androidx.lifecycle.ViewModel
 import eu.alsk.transmissionremote.data.ConnectionRepository

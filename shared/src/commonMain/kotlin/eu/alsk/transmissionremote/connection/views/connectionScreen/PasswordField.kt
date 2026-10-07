@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.ui.connection.views.connectionScreen
+package eu.alsk.transmissionremote.connection.views.connectionScreen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +20,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import eu.alsk.transmissionremote.ui.theme.AppTheme
+import eu.alsk.transmissionremote.theme.AppTheme
 
 @Composable
 internal fun PasswordField(value: String, onValueChange: (String) -> Unit, onDone: () -> Unit) {

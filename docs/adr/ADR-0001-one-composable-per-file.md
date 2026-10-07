@@ -33,7 +33,7 @@ are also the cheapest way to check UI on every platform, but only if each piece 
   - `XxxContent` renders a UI state. It takes state and callbacks, and is `private` because only
     `XxxScreen` calls it. Its previews cover the interesting states, including light and dark.
 
-Example: `ui/connection/views/connectionScreen/` has `ConnectionScreen.kt` (`ConnectionScreen` +
+Example: `connection/views/connectionScreen/` has `ConnectionScreen.kt` (`ConnectionScreen` +
 `ConnectionContent`), `FormField.kt` and `PasswordField.kt`.
 
 ## Consequences
@@ -42,4 +42,4 @@ Example: `ui/connection/views/connectionScreen/` has `ConnectionScreen.kt` (`Con
 - Helpers used by several files must be `internal` instead of `private`. See
   [ADR-0002](ADR-0002-internal-by-default.md).
 - More, smaller files. Each feature's `views/` package keeps them grouped (see
-  [ADR-0004](ADR-0004-feature-package-layout.md)).
+  [ADR-0006](ADR-0006-features-at-the-package-root.md)).

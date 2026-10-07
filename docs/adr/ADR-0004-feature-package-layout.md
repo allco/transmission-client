@@ -1,7 +1,7 @@
 # ADR-0004: Feature packages keep the ViewModel at the root and composables in `views/`
 
-- **Status:** Accepted, amended by [ADR-0005](ADR-0005-file-or-folder-per-component.md)
-  (components with parts are folders inside `views/`)
+- **Status:** Superseded by [ADR-0006](ADR-0006-features-at-the-package-root.md) (features moved
+  out of `ui/` to the package root); earlier amended by [ADR-0005](ADR-0005-file-or-folder-per-component.md)
 - **Date:** 2026-10-07
 
 ## Context

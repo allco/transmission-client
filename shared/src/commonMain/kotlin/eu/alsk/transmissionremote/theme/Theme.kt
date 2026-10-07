@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.ui.theme
+package eu.alsk.transmissionremote.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

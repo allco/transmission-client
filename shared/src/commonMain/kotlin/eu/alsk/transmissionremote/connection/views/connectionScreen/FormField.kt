@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.ui.connection.views.connectionScreen
+package eu.alsk.transmissionremote.connection.views.connectionScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import eu.alsk.transmissionremote.ui.theme.AppTheme
+import eu.alsk.transmissionremote.theme.AppTheme
 
 /** What a [FormField] shows. [error] is shown below the field and marks it invalid when not null. */
 internal data class FormFieldState(

@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.ui.splash.views.splashScreen
+package eu.alsk.transmissionremote.splash.views.splashScreen
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import eu.alsk.transmissionremote.ui.theme.AppTheme
+import eu.alsk.transmissionremote.theme.AppTheme
 
 /** A filled circle with a "download" arrow. */
 @Composable
