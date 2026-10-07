@@ -82,6 +82,9 @@ In short:
   (`connection/`, `splash/`). There is no `ui/`. A feature keeps its ViewModel at its root and its
   composables in `views/`. Code shared by several features goes in role-named root packages
   (`theme/`, `data/`). ADR-0006 supersedes ADR-0004.
+- **ADR-0007:** the Gradle daemon runs on Amazon Corretto 25, set in
+  `gradle/gradle-daemon-jvm.properties` with direct, version-pinned `corretto.aws` download links.
+  No foojay: don't re-add the resolver plugin or run `updateDaemonJvm`.
 
 ## Transmission RPC
 
