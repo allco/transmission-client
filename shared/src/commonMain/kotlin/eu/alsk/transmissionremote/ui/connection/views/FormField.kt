@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.ui.connection
+package eu.alsk.transmissionremote.ui.connection.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

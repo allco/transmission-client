@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.ui.connection
+package eu.alsk.transmissionremote.ui.connection.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,6 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import eu.alsk.transmissionremote.ui.connection.ConnectionFormState
+import eu.alsk.transmissionremote.ui.connection.ConnectionViewModel
 import eu.alsk.transmissionremote.ui.theme.AppTheme
 
 @Composable

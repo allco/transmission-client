@@ -45,8 +45,10 @@ Inside `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/`:
   Splash → Connection inside a `Crossfade`. There is no navigation library.
 - `ui/theme/Theme.kt`: Material 3 light/dark colour schemes (red seed). The Figma design file
   uses the same palette as colour variables.
-- `ui/<feature>/`: a screen is a stateful `XxxScreen(viewModel = viewModel { … })` that collects
-  a `StateFlow` and passes the state and callbacks to a stateless `XxxContent` in the same file.
+- `ui/<feature>/`: the feature's ViewModel and UI state; its composables live in
+  `ui/<feature>/views/` (ADR-0004). A screen is a stateful
+  `XxxScreen(viewModel = viewModel { … })` that collects a `StateFlow` and passes the state and
+  callbacks to a stateless `XxxContent` in the same file.
   ViewModels come from `org.jetbrains.androidx.lifecycle`, and form state is an immutable data
   class with computed validation properties.
 - `data/`: `ConnectionRepository` is an in-memory singleton, so saved connections don't persist
@@ -69,6 +71,8 @@ In short:
 - **ADR-0003:** a Composable with more than two data parameters (not counting callbacks, `Modifier`
   or a ViewModel) takes a `<FunctionName>State` data class declared at the top of its file, e.g.
   `FormFieldState` in `FormField.kt`.
+- **ADR-0004:** each feature is a package `ui/<feature>/` holding its ViewModel and UI state, with all
+  its composables in `ui/<feature>/views/`.
 
 ## Transmission RPC
 
