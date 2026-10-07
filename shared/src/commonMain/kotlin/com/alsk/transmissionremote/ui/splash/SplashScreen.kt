@@ -22,7 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alsk.transmissionremote.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 
 private const val SPLASH_DURATION_MS = 1500L
@@ -78,6 +80,30 @@ private fun AppLogo(background: Color, foreground: Color, modifier: Modifier = M
             Offset(cx + wing * 1.3f, baseY),
             strokeWidth = stroke.width,
             cap = StrokeCap.Round,
+        )
+    }
+}
+
+@Preview(name = "Splash – light", showBackground = true)
+@Composable
+private fun SplashScreenPreview() {
+    AppTheme(darkTheme = false) { SplashScreen(onFinished = {}) }
+}
+
+@Preview(name = "Splash – dark", showBackground = true)
+@Composable
+private fun SplashScreenDarkPreview() {
+    AppTheme(darkTheme = true) { SplashScreen(onFinished = {}) }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AppLogoPreview() {
+    AppTheme {
+        AppLogo(
+            background = MaterialTheme.colorScheme.primary,
+            foreground = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.size(96.dp),
         )
     }
 }

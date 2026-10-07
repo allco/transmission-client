@@ -38,9 +38,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.alsk.transmissionremote.ui.theme.AppTheme
 
 @Composable
 fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { ConnectionViewModel() }) {
@@ -199,4 +201,78 @@ private fun PasswordField(value: String, onValueChange: (String) -> Unit, onDone
         },
         modifier = Modifier.fillMaxWidth(),
     )
+}
+
+@Preview(name = "Connection – light", showBackground = true)
+@Composable
+private fun ConnectionScreenPreview() {
+    AppTheme(darkTheme = false) { ConnectionScreen(viewModel = remember { ConnectionViewModel() }) }
+}
+
+@Preview(name = "Connection – dark", showBackground = true)
+@Composable
+private fun ConnectionScreenDarkPreview() {
+    AppTheme(darkTheme = true) { ConnectionScreen(viewModel = remember { ConnectionViewModel() }) }
+}
+
+@Preview(name = "Connection content – filled in", showBackground = true)
+@Composable
+private fun ConnectionContentFilledPreview() {
+    ConnectionContentPreview(
+        ConnectionFormState(
+            name = "Home server",
+            host = "192.168.1.10",
+            useHttps = true,
+            username = "admin",
+            password = "secret",
+        )
+    )
+}
+
+@Preview(name = "Connection content – validation errors", showBackground = true)
+@Composable
+private fun ConnectionContentErrorsPreview() {
+    ConnectionContentPreview(
+        ConnectionFormState(host = "http://nas.local", port = "99999", rpcPath = "rpc", showErrors = true)
+    )
+}
+
+@Composable
+private fun ConnectionContentPreview(state: ConnectionFormState) {
+    AppTheme {
+        ConnectionContent(
+            state = state,
+            snackbarHostState = remember { SnackbarHostState() },
+            onNameChange = {},
+            onHostChange = {},
+            onPortChange = {},
+            onRpcPathChange = {},
+            onUseHttpsChange = {},
+            onUsernameChange = {},
+            onPasswordChange = {},
+            onSave = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FormFieldPreview() {
+    AppTheme {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            FormField("Host", "192.168.1.10", {})
+            FormField("Host", "", {}, placeholder = "192.168.1.10 or nas.local")
+            FormField("Port", "99999", {}, error = "Port must be between 1 and 65535")
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PasswordFieldPreview() {
+    AppTheme {
+        Column(Modifier.padding(16.dp)) {
+            PasswordField("secret", {}, onDone = {})
+        }
+    }
 }

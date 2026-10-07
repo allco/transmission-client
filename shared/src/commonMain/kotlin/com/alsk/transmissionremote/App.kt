@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
 import com.alsk.transmissionremote.ui.connection.ConnectionScreen
 import com.alsk.transmissionremote.ui.splash.SplashScreen
 import com.alsk.transmissionremote.ui.theme.AppTheme
@@ -23,4 +24,10 @@ fun App() {
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AppPreview() {
+    App()
 }
