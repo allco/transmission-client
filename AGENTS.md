@@ -66,6 +66,9 @@ In short:
 - **ADR-0002:** everything not called from another Gradle module or from Swift is `internal`, or
   `private` if it's used in a single file. Today the only public declarations are `App()` and
   `MainViewController()`. This prepares for splitting `shared` into several modules later.
+- **ADR-0003:** a Composable with more than two data parameters (not counting callbacks, `Modifier`
+  or a ViewModel) takes a `<FunctionName>State` data class declared at the top of its file, e.g.
+  `FormFieldState` in `FormField.kt`.
 
 ## Transmission RPC
 
