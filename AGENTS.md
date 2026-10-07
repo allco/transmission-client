@@ -46,9 +46,9 @@ Inside `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/`:
 - `ui/theme/Theme.kt`: Material 3 light/dark colour schemes (red seed). The Figma design file
   uses the same palette as colour variables.
 - `ui/<feature>/`: a screen is a stateful `XxxScreen(viewModel = viewModel { … })` that collects
-  a `StateFlow` and passes the state and callbacks to a stateless `XxxContent`. ViewModels come
-  from `org.jetbrains.androidx.lifecycle`, and form state is an immutable data class with computed
-  validation properties.
+  a `StateFlow` and passes the state and callbacks to a stateless `XxxContent` in the same file.
+  ViewModels come from `org.jetbrains.androidx.lifecycle`, and form state is an immutable data
+  class with computed validation properties.
 - `data/`: `ConnectionRepository` is an in-memory singleton, so saved connections don't persist
   yet. There is no networking code yet.
 
@@ -60,8 +60,9 @@ named `ADR-<number>-<title-in-kebab-case>.md`.
 In short:
 
 - **ADR-0001:** each non-trivial Composable gets its own file, with its `@Preview` functions in the
-  same file. Preview sample data goes in a file-level `private val dummy<ElementName>`. Composables
-  that take a ViewModel (`XxxScreen`) have no previews; preview the stateless `XxxContent` instead.
+  same file. Preview sample data goes in a file-level `private val dummy<ElementName>`. A screen's
+  container `XxxScreen` (takes the ViewModel, no previews) and its renderer `XxxContent` (takes UI
+  state, `private`, has the previews) share one file, `XxxScreen.kt`.
 - **ADR-0002:** everything not called from another Gradle module or from Swift is `internal`, or
   `private` if it's used in a single file. Today the only public declarations are `App()` and
   `MainViewController()`. This prepares for splitting `shared` into several modules later.

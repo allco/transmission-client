@@ -25,16 +25,16 @@ are also the cheapest way to check UI on every platform, but only if each piece 
 - Preview sample data is a file-level `private val dummy<ElementName>` next to the previews (e.g.
   `dummyConnectionFormState`, `dummyConnectionFormStateWithErrors`, `dummyPassword`). Previews use
   these values instead of inline literals.
-- Screens follow the stateful/stateless split, one file each:
-  - `XxxScreen.kt`: gets the ViewModel and collects its state. A Composable that takes a
-    ViewModel, like `ConnectionScreen(viewModel: ConnectionViewModel)`, has **no previews**. A
-    preview would need a real ViewModel and its dependencies, and it would show only the
-    ViewModel's initial state.
-  - `XxxContent.kt`: takes state and callbacks. Its previews cover the interesting states,
-    including light and dark.
+- A screen is one element made of two Composables, and both live in `XxxScreen.kt`:
+  - `XxxScreen` is the container. It takes the ViewModel, collects its state and wires callbacks.
+    It has **no previews**: a preview would need a real ViewModel and its dependencies, and would
+    show only the ViewModel's initial state. The same holds for any Composable that takes a
+    ViewModel.
+  - `XxxContent` renders a UI state. It takes state and callbacks, and is `private` because only
+    `XxxScreen` calls it. Its previews cover the interesting states, including light and dark.
 
-Example: `ui/connection/` has `ConnectionScreen.kt`, `ConnectionContent.kt`, `FormField.kt` and
-`PasswordField.kt`.
+Example: `ui/connection/` has `ConnectionScreen.kt` (`ConnectionScreen` + `ConnectionContent`),
+`FormField.kt` and `PasswordField.kt`.
 
 ## Consequences
 
