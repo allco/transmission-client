@@ -17,10 +17,11 @@ Each record is short, numbered and never renumbered.
 | [ADR-0006](adr/ADR-0006-features-at-the-package-root.md) | Features are top-level packages, with the ViewModel at the root and composables in `views/` | Accepted (amended) |
 | [ADR-0007](adr/ADR-0007-gradle-daemon-on-corretto-from-direct-links.md) | The Gradle daemon runs on Amazon Corretto, downloaded from direct CDN links | Accepted |
 | [ADR-0008](adr/ADR-0008-composables-take-only-what-they-use.md) | Composables take exactly the data they use (interface segregation) | Accepted |
+| [ADR-0009](adr/ADR-0009-write-docs-in-simplified-technical-english.md) | Write docs and comments in Simplified Technical English | Accepted |
 
 To add a decision, copy [`adr/template.md`](adr/template.md) to
 `adr/ADR-<number>-<title-in-kebab-case>.md`, using the next four-digit number (e.g.
-`ADR-0009-use-ktor-for-rpc.md`). Fill it in and add a row above. To change a decision, write a new
+`ADR-0010-use-ktor-for-rpc.md`). Fill it in and add a row above. To change a decision, write a new
 ADR that supersedes the old one, and set the old one's status to "Superseded by ADR-NNNN" rather
 than rewriting it.
 
