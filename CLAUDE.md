@@ -55,9 +55,9 @@ Inside `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/`:
 ## Conventions
 
 - Each non-trivial Composable gets its own file, with its `@Preview` functions in the same file.
-  Use the common `androidx.compose.ui.tooling.preview.Preview` and wrap previews in
-  `AppTheme(darkTheme = …)`. Pass `darkTheme` explicitly, because `uiMode` only affects Android
-  previews.
+  Use the common `androidx.compose.ui.tooling.preview.Preview` and wrap previews in `AppTheme`.
+  For a light/dark pair, pass `darkTheme = true/false` explicitly, because `uiMode` only affects
+  Android previews.
 - Preview sample data goes in a file-level `private val dummy<ElementName>`, for example
   `dummyConnectionFormState`. Composables shared across files are `internal`; previews stay
   `private`.
