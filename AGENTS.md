@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents (Claude Code, Codex, Gemini CLI and others) when working with code in this repository.
 
 ## What this is
 
@@ -60,7 +60,8 @@ named `ADR-<number>-<title-in-kebab-case>.md`.
 In short:
 
 - **ADR-0001:** each non-trivial Composable gets its own file, with its `@Preview` functions in the
-  same file. Preview sample data goes in a file-level `private val dummy<ElementName>`.
+  same file. Preview sample data goes in a file-level `private val dummy<ElementName>`. Composables
+  that take a ViewModel (`XxxScreen`) have no previews; preview the stateless `XxxContent` instead.
 - **ADR-0002:** everything not called from another Gradle module or from Swift is `internal`, or
   `private` if it's used in a single file. Today the only public declarations are `App()` and
   `MainViewController()`. This prepares for splitting `shared` into several modules later.

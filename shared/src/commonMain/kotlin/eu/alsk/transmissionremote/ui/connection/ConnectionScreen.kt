@@ -5,10 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import eu.alsk.transmissionremote.ui.theme.AppTheme
 
 @Composable
 internal fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { ConnectionViewModel() }) {
@@ -36,14 +34,3 @@ internal fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { Conne
     )
 }
 
-@Preview(name = "Connection – light", showBackground = true)
-@Composable
-private fun ConnectionScreenPreview() {
-    AppTheme(darkTheme = false) { ConnectionScreen(viewModel = remember { ConnectionViewModel() }) }
-}
-
-@Preview(name = "Connection – dark", showBackground = true)
-@Composable
-private fun ConnectionScreenDarkPreview() {
-    AppTheme(darkTheme = true) { ConnectionScreen(viewModel = remember { ConnectionViewModel() }) }
-}

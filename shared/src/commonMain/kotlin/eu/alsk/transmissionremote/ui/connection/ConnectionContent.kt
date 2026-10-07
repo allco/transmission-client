@@ -143,6 +143,12 @@ private fun ConnectionContentFilledPreview() {
     ConnectionContentPreview(dummyConnectionFormState)
 }
 
+@Preview(name = "Connection content – filled in, dark", showBackground = true)
+@Composable
+private fun ConnectionContentFilledDarkPreview() {
+    ConnectionContentPreview(dummyConnectionFormState, darkTheme = true)
+}
+
 @Preview(name = "Connection content – validation errors", showBackground = true)
 @Composable
 private fun ConnectionContentErrorsPreview() {
@@ -150,8 +156,8 @@ private fun ConnectionContentErrorsPreview() {
 }
 
 @Composable
-private fun ConnectionContentPreview(state: ConnectionFormState) {
-    AppTheme {
+private fun ConnectionContentPreview(state: ConnectionFormState, darkTheme: Boolean = false) {
+    AppTheme(darkTheme = darkTheme) {
         ConnectionContent(
             state = state,
             snackbarHostState = remember { SnackbarHostState() },

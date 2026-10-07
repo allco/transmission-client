@@ -26,8 +26,12 @@ are also the cheapest way to check UI on every platform, but only if each piece 
   `dummyConnectionFormState`, `dummyConnectionFormStateWithErrors`, `dummyPassword`). Previews use
   these values instead of inline literals.
 - Screens follow the stateful/stateless split, one file each:
-  - `XxxScreen.kt`: gets the ViewModel and collects its state.
-  - `XxxContent.kt`: takes state and callbacks. Its previews cover the interesting states.
+  - `XxxScreen.kt`: gets the ViewModel and collects its state. A Composable that takes a
+    ViewModel, like `ConnectionScreen(viewModel: ConnectionViewModel)`, has **no previews**. A
+    preview would need a real ViewModel and its dependencies, and it would show only the
+    ViewModel's initial state.
+  - `XxxContent.kt`: takes state and callbacks. Its previews cover the interesting states,
+    including light and dark.
 
 Example: `ui/connection/` has `ConnectionScreen.kt`, `ConnectionContent.kt`, `FormField.kt` and
 `PasswordField.kt`.
