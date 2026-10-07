@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.splash.views.splashScreen
+package eu.alsk.transmissionremote.splash.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

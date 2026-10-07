@@ -74,9 +74,10 @@ In short:
   or a ViewModel) takes a `<FunctionName>State` data class declared at the top of its file, e.g.
   `FormFieldState` in `FormField.kt`.
 - **ADR-0005:** a component (ViewModel, view, use case, …) that fits in one file is one file. If it
-  has parts used only by it, it becomes a folder named after it in camelCase
-  (`connectionScreen/ConnectionScreen.kt` + `FormField.kt` + `PasswordField.kt`). A part used by a
-  second component moves up and becomes a component itself.
+  has parts used only by it, it becomes a folder named after it in camelCase, e.g.
+  `connectionScreen/` — but only once its package holds a second component. Until then the parts
+  sit directly in the package (today: `connection/views/ConnectionScreen.kt` + `FormField.kt` +
+  `PasswordField.kt`). A part used by a second component moves up and becomes a component itself.
 - **ADR-0006:** the root package holds `App.kt` and one package per feature, named after the feature
   (`connection/`, `splash/`). There is no `ui/`. A feature keeps its ViewModel at its root and its
   composables in `views/`. Code shared by several features goes in role-named root packages

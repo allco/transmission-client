@@ -23,16 +23,14 @@ eu/alsk/transmissionremote/
 ├── App.kt                          entry point and top-level navigation
 ├── connection/                     feature            → later feature:connection
 │   ├── ConnectionViewModel.kt      ViewModel + its UI state (ConnectionFormState)
-│   └── views/
-│       └── connectionScreen/       a view with parts (ADR-0005)
-│           ├── ConnectionScreen.kt ConnectionScreen (container) + ConnectionContent (renderer)
-│           ├── FormField.kt
-│           └── PasswordField.kt
+│   └── views/                      one screen, so its parts sit here directly (ADR-0005)
+│       ├── ConnectionScreen.kt     ConnectionScreen (container) + ConnectionContent (renderer)
+│       ├── FormField.kt
+│       └── PasswordField.kt
 ├── splash/                         feature            → later feature:splash
 │   └── views/
-│       └── splashScreen/
-│           ├── SplashScreen.kt
-│           └── AppLogo.kt
+│       ├── SplashScreen.kt
+│       └── AppLogo.kt
 ├── theme/                          shared UI          → later core:designsystem
 │   └── Theme.kt
 └── data/                           shared data        → later core:data / core:network
@@ -43,8 +41,9 @@ eu/alsk/transmissionremote/
   - use cases and other logic used only by this feature;
   - `views/`, with every Composable of the feature: one per file
     ([ADR-0001](ADR-0001-one-composable-per-file.md)), plus their `<FunctionName>State` classes
-    ([ADR-0003](ADR-0003-state-class-for-composables-with-many-parameters.md)). A view with parts
-    is a folder of its own ([ADR-0005](ADR-0005-file-or-folder-per-component.md)).
+    ([ADR-0003](ADR-0003-state-class-for-composables-with-many-parameters.md)). Once `views/` holds
+    more than one view, a view with parts is a folder of its own
+    ([ADR-0005](ADR-0005-file-or-folder-per-component.md)).
 - A feature without a ViewModel, like `splash`, has only `views/`.
 - Packages: `eu.alsk.transmissionremote.<feature>` and
   `eu.alsk.transmissionremote.<feature>.views[.<component>]`.

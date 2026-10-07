@@ -13,7 +13,7 @@ Each record is short, numbered and never renumbered.
 | [ADR-0002](adr/ADR-0002-internal-by-default.md) | Everything not exposed is `internal` | Accepted |
 | [ADR-0003](adr/ADR-0003-state-class-for-composables-with-many-parameters.md) | Composables with more than two data parameters take a `<FunctionName>State` | Accepted |
 | [ADR-0004](adr/ADR-0004-feature-package-layout.md) | Feature packages keep the ViewModel at the root and composables in `views/` | Superseded by ADR-0006 |
-| [ADR-0005](adr/ADR-0005-file-or-folder-per-component.md) | A component is one file, or a folder named after it when it has parts | Accepted |
+| [ADR-0005](adr/ADR-0005-file-or-folder-per-component.md) | A component is one file, or a folder named after it when it has parts | Accepted (amended) |
 | [ADR-0006](adr/ADR-0006-features-at-the-package-root.md) | Features are top-level packages, with the ViewModel at the root and composables in `views/` | Accepted |
 
 To add a decision, copy [`adr/template.md`](adr/template.md) to

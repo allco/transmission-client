@@ -33,8 +33,8 @@ are also the cheapest way to check UI on every platform, but only if each piece 
   - `XxxContent` renders a UI state. It takes state and callbacks, and is `private` because only
     `XxxScreen` calls it. Its previews cover the interesting states, including light and dark.
 
-Example: `connection/views/connectionScreen/` has `ConnectionScreen.kt` (`ConnectionScreen` +
-`ConnectionContent`), `FormField.kt` and `PasswordField.kt`.
+Example: `connection/views/` has `ConnectionScreen.kt` (`ConnectionScreen` + `ConnectionContent`),
+`FormField.kt` and `PasswordField.kt`.
 
 ## Consequences
 

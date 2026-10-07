@@ -7,8 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
-import eu.alsk.transmissionremote.connection.views.connectionScreen.ConnectionScreen
-import eu.alsk.transmissionremote.splash.views.splashScreen.SplashScreen
+import eu.alsk.transmissionremote.connection.views.ConnectionScreen
+import eu.alsk.transmissionremote.splash.views.SplashScreen
 import eu.alsk.transmissionremote.theme.AppTheme
 
 private enum class Screen { Splash, Connection }
