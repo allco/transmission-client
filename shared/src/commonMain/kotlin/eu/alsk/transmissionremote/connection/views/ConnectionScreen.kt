@@ -32,57 +32,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import eu.alsk.transmissionremote.connection.ConnectionFormState
+import eu.alsk.transmissionremote.connection.ConnectionContentState
+import eu.alsk.transmissionremote.connection.ConnectionEvent
 import eu.alsk.transmissionremote.connection.ConnectionViewModel
 import eu.alsk.transmissionremote.theme.AppTheme
-
-/**
- * Holds the data that [ConnectionContent] shows: the field values, the errors to show and the URL
- * preview.
- */
-private data class ConnectionContentState(
-    val name: String,
-    val host: String,
-    val hostError: String?,
-    val port: String,
-    val portError: String?,
-    val rpcPath: String,
-    val rpcPathError: String?,
-    val useHttps: Boolean,
-    val username: String,
-    val password: String,
-    /** The full RPC URL. The value is null while the form is invalid. */
-    val rpcUrl: String?,
-)
-
-private fun ConnectionFormState.toContentState() = ConnectionContentState(
-    name = name,
-    host = host,
-    hostError = hostError.takeIf { showErrors },
-    port = port,
-    portError = portError.takeIf { showErrors },
-    rpcPath = rpcPath,
-    rpcPathError = rpcPathError.takeIf { showErrors },
-    useHttps = useHttps,
-    username = username,
-    password = password,
-    rpcUrl = if (isValid) toConnection().rpcUrl else null,
-)
 
 @Composable
 internal fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { ConnectionViewModel() }) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(state.saved) {
-        if (state.saved) {
-            snackbarHostState.showSnackbar("Connection saved")
-            viewModel.onSavedMessageShown()
+    LaunchedEffect(viewModel) {
+        viewModel.events.collect { event ->
+            when (event) {
+                ConnectionEvent.Saved -> snackbarHostState.showSnackbar("Connection saved")
+            }
         }
     }
 
     ConnectionContent(
-        state = state.toContentState(),
+        state = state,
         snackbarHostState = snackbarHostState,
         onNameChange = viewModel::onNameChange,
         onHostChange = viewModel::onHostChange,
