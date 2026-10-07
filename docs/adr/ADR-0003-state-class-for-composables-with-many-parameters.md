@@ -26,8 +26,8 @@ the same arguments. They also hide which values belong together.
   `dummyFormFieldStateWithError`.
 - An existing state object counts as one data parameter, but only if the Composable uses all of
   the object. See [ADR-0008](ADR-0008-composables-take-only-what-they-use.md). For this reason,
-  `ConnectionContent` takes its own `ConnectionContentState`, and not the `ConnectionFormState` of
-  the ViewModel.
+  `ConnectionContent` takes `ConnectionContentState`, which holds only the data that
+  `ConnectionContent` shows.
 
 Example, in `connection/views/FormField.kt`:
 

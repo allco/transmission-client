@@ -96,7 +96,8 @@ This list gives a short summary of each ADR:
     after the feature (`connection/`, `splash/`). The project has no `ui/` package.
   - Put the ViewModel of a feature at the root of the feature package. Put the composables of the
     feature in `views/`.
-  - Put the UI state class of a ViewModel in its own file (`ConnectionFormState.kt`).
+  - Put the UI state class and the event class of a ViewModel in their own files
+    (`ConnectionContentState.kt`, `ConnectionEvent.kt`).
   - Put code that several features use in root packages that have the name of their role
     (`theme/`, `data/`).
   - ADR-0006 supersedes ADR-0004.
@@ -104,9 +105,10 @@ This list gives a short summary of each ADR:
   sets this JVM with direct `corretto.aws` download links that pin the version. Do not use foojay.
   Do not add the resolver plugin again. Do not run `updateDaemonJvm`.
 - **ADR-0008:** A Composable takes exactly the data that it renders, plus its callbacks (interface
-  segregation). Do not pass a ViewModel state or a model that the view uses only in part. Give the
-  view a display-ready `XxxState` instead (for example `ConnectionContentState`). Map this state
-  next to `XxxScreen`.
+  segregation). Do not pass a model that the Composable uses only in part. The ViewModel makes the
+  state of `XxxContent` directly (`ConnectionViewModel` → `ConnectionContentState`). Keep the
+  working data of the ViewModel private. Send a one-time signal as an event (`ConnectionEvent`),
+  not as a state field.
 - **ADR-0009:** Use the `asd-ste100` skill to write all Markdown files, KDoc, code comments and
   commit messages in Simplified Technical English. Use the Strict mode for `AGENTS.md`, code
   comments and KDoc, and the STE-flavored mode for `README.md`, ADRs and `docs/reference/`. Before
