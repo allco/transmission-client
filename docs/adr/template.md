@@ -1,6 +1,6 @@
-# NNNN. Title in the imperative
+# ADR-NNNN: Title in the imperative
 
-- **Status:** Proposed | Accepted | Superseded by NNNN
+- **Status:** Proposed | Accepted | Superseded by ADR-NNNN
 - **Date:** YYYY-MM-DD
 
 ## Context

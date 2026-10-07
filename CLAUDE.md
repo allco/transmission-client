@@ -55,12 +55,13 @@ Inside `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/`:
 ## Conventions
 
 The patterns this codebase follows are recorded as ADRs in `docs/adr/` (index: `docs/README.md`).
-Follow them, and when a new pattern is agreed, record it as a new ADR from `docs/adr/template.md`.
+Follow them, and when a new pattern is agreed, record it as a new ADR from `docs/adr/template.md`,
+named `ADR-<number>-<title-in-kebab-case>.md`.
 In short:
 
-- **0001:** each non-trivial Composable gets its own file, with its `@Preview` functions in the
+- **ADR-0001:** each non-trivial Composable gets its own file, with its `@Preview` functions in the
   same file. Preview sample data goes in a file-level `private val dummy<ElementName>`.
-- **0002:** everything not called from another Gradle module or from Swift is `internal`, or
+- **ADR-0002:** everything not called from another Gradle module or from Swift is `internal`, or
   `private` if it's used in a single file. Today the only public declarations are `App()` and
   `MainViewController()`. This prepares for splitting `shared` into several modules later.
 

@@ -1,4 +1,4 @@
-# 0001. One non-trivial Composable per file, with its previews
+# ADR-0001: One non-trivial Composable per file, with its previews
 
 - **Status:** Accepted
 - **Date:** 2026-10-07
@@ -36,5 +36,5 @@ Example: `ui/connection/` has `ConnectionScreen.kt`, `ConnectionContent.kt`, `Fo
 
 - Each Composable can be found by file name, and its previews sit right below it.
 - Helpers used by several files must be `internal` instead of `private`. See
-  [0002](0002-internal-by-default.md).
+  [ADR-0002](ADR-0002-internal-by-default.md).
 - More, smaller files. Feature packages (`ui/<feature>/`) keep them grouped.
