@@ -1,4 +1,4 @@
-package com.alsk.transmissionremote.ui.splash
+package eu.alsk.transmissionremote.ui.splash
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alsk.transmissionremote.ui.theme.AppTheme
+import eu.alsk.transmissionremote.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 
 private const val SPLASH_DURATION_MS = 1500L

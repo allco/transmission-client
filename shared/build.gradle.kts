@@ -31,7 +31,7 @@ kotlin {
     }
 
     android {
-        namespace = "com.alsk.transmissionremote.shared"
+        namespace = "eu.alsk.transmissionremote.shared"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 

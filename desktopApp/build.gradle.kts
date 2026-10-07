@@ -15,7 +15,7 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.alsk.transmissionremote.MainKt"
+        mainClass = "eu.alsk.transmissionremote.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Deb, TargetFormat.Rpm, TargetFormat.AppImage)

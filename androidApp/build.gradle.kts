@@ -13,11 +13,11 @@ dependencies {
 }
 
 android {
-    namespace = "com.alsk.transmissionremote"
+    namespace = "eu.alsk.transmissionremote"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.alsk.transmissionremote"
+        applicationId = "eu.alsk.transmissionremote"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1

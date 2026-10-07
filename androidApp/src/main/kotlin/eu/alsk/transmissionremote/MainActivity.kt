@@ -1,4 +1,4 @@
-package com.alsk.transmissionremote
+package eu.alsk.transmissionremote
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

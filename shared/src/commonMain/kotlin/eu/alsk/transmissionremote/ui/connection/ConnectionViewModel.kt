@@ -1,8 +1,8 @@
-package com.alsk.transmissionremote.ui.connection
+package eu.alsk.transmissionremote.ui.connection
 
 import androidx.lifecycle.ViewModel
-import com.alsk.transmissionremote.data.ConnectionRepository
-import com.alsk.transmissionremote.data.ServerConnection
+import eu.alsk.transmissionremote.data.ConnectionRepository
+import eu.alsk.transmissionremote.data.ServerConnection
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

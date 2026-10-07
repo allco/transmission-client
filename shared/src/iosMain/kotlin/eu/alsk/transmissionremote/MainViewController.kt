@@ -1,4 +1,4 @@
-package com.alsk.transmissionremote
+package eu.alsk.transmissionremote
 
 import androidx.compose.ui.window.ComposeUIViewController
 

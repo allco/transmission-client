@@ -1,4 +1,4 @@
-package com.alsk.transmissionremote.ui.connection
+package eu.alsk.transmissionremote.ui.connection
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,7 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.alsk.transmissionremote.ui.theme.AppTheme
+import eu.alsk.transmissionremote.ui.theme.AppTheme
 
 @Composable
 fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { ConnectionViewModel() }) {
