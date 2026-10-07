@@ -33,6 +33,29 @@ To change a decision, do these steps:
 2. Set the status of the old ADR to "Superseded by ADR-NNNN".
 3. Do not rewrite the old ADR.
 
+## Proposals
+
+The [`proposals/`](proposals/) folder holds ideas that the team has not decided yet. A proposal
+gives the problem, the options and the proposed solution. Do not implement an open proposal.
+
+| # | Proposal | Status |
+|---|---|---|
+| [PROPOSAL-0001](proposals/PROPOSAL-0001-server-configuration-storage.md) | Store the server configurations in multiplatform-settings, and passwords in secure storage | Open |
+
+To add a proposal, do these steps:
+
+1. Create `proposals/PROPOSAL-<number>-<title-in-kebab-case>.md`. Use the next four-digit number.
+2. Give these sections: Problem, Options, Proposal, Consequences and Open questions.
+3. Set the status to "Open".
+4. Add a row for the new proposal to the table above.
+
+When the team accepts a proposal, do these steps:
+
+1. Write an ADR that records the decision.
+2. Set the status of the proposal to "Accepted as ADR-NNNN".
+
+When the team rejects a proposal, set its status to "Rejected" and give the reason in the file.
+
 ## References
 
 The [`reference/`](reference/) folder holds external material that the code relies on.

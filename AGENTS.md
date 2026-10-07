@@ -115,6 +115,9 @@ This list gives a short summary of each ADR:
   you commit, run `python3 -I .claude/skills/asd-ste100/scripts/ste-lint.py <file.md>` on each
   changed Markdown file.
 
+`docs/proposals/` holds ideas that the team has not decided yet. Do not implement an open proposal.
+When the team accepts a proposal, record the decision in an ADR.
+
 ## Transmission RPC
 
 `docs/reference/transmission-rpc-api.md` is the API reference. Build the network layer from this
