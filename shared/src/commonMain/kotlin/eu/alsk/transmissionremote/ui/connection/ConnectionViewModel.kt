@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-data class ConnectionFormState(
+internal data class ConnectionFormState(
     val name: String = "",
     val host: String = "",
     val port: String = ServerConnection.DEFAULT_PORT.toString(),
@@ -48,7 +48,7 @@ data class ConnectionFormState(
     )
 }
 
-class ConnectionViewModel(
+internal class ConnectionViewModel(
     private val repository: ConnectionRepository = ConnectionRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(

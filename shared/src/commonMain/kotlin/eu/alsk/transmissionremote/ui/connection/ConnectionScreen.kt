@@ -11,7 +11,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import eu.alsk.transmissionremote.ui.theme.AppTheme
 
 @Composable
-fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { ConnectionViewModel() }) {
+internal fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { ConnectionViewModel() }) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 

@@ -24,7 +24,7 @@ import kotlinx.coroutines.delay
 private const val SPLASH_DURATION_MS = 1500L
 
 @Composable
-fun SplashScreen(onFinished: () -> Unit) {
+internal fun SplashScreen(onFinished: () -> Unit) {
     val currentOnFinished by rememberUpdatedState(onFinished)
     LaunchedEffect(Unit) {
         delay(SPLASH_DURATION_MS)

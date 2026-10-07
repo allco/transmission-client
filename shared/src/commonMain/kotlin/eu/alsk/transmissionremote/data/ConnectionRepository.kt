@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /** Holds the saved server connection. In-memory only for now: it is lost when the app exits. */
-object ConnectionRepository {
+internal object ConnectionRepository {
     private val _connection = MutableStateFlow<ServerConnection?>(null)
     val connection: StateFlow<ServerConnection?> = _connection.asStateFlow()
 
