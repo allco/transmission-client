@@ -80,11 +80,15 @@ In short:
   `PasswordField.kt`). A part used by a second component moves up and becomes a component itself.
 - **ADR-0006:** the root package holds `App.kt` and one package per feature, named after the feature
   (`connection/`, `splash/`). There is no `ui/`. A feature keeps its ViewModel at its root and its
-  composables in `views/`. Code shared by several features goes in role-named root packages
+  composables in `views/`. A ViewModel's UI state class gets its own file
+  (`ConnectionFormState.kt`). Code shared by several features goes in role-named root packages
   (`theme/`, `data/`). ADR-0006 supersedes ADR-0004.
 - **ADR-0007:** the Gradle daemon runs on Amazon Corretto 25, set in
   `gradle/gradle-daemon-jvm.properties` with direct, version-pinned `corretto.aws` download links.
   No foojay: don't re-add the resolver plugin or run `updateDaemonJvm`.
+- **ADR-0008:** Composables take exactly the data they render plus their callbacks (interface
+  segregation). Don't pass a ViewModel state or model a view only partly uses. Give it a
+  display-ready `XxxState` instead (e.g. `ConnectionContentState`), mapped next to `XxxScreen`.
 
 ## Transmission RPC
 

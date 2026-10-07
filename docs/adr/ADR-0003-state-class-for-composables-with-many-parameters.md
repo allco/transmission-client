@@ -24,9 +24,10 @@ same arguments. They also hide which values belong together.
 - Preview data for such a Composable is a set of `dummy<FunctionName>State…` values (see
   [ADR-0001](ADR-0001-one-composable-per-file.md)), e.g. `dummyFormFieldState` and
   `dummyFormFieldStateWithError`.
-- An existing state object counts as one data parameter. For example, `ConnectionContent` takes
-  the ViewModel's `ConnectionFormState` and a `SnackbarHostState`, which makes two, so it doesn't
-  need its own class.
+- An existing state object counts as one data parameter, but only if the Composable uses all of
+  it. See [ADR-0008](ADR-0008-composables-take-only-what-they-use.md). That's why
+  `ConnectionContent` takes its own `ConnectionContentState` rather than the ViewModel's
+  `ConnectionFormState`.
 
 Example, in `connection/views/FormField.kt`:
 

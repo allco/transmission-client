@@ -23,7 +23,7 @@ are also the cheapest way to check UI on every platform, but only if each piece 
     explicitly; `uiMode` only affects Android previews.
   - Preview functions are `private`.
 - Preview sample data is a file-level `private val dummy<ElementName>` next to the previews (e.g.
-  `dummyConnectionFormState`, `dummyConnectionFormStateWithErrors`, `dummyPassword`). Previews use
+  `dummyConnectionContentState`, `dummyConnectionContentStateWithErrors`, `dummyPassword`). Previews use
   these values instead of inline literals.
 - A screen is one element made of two Composables, and both live in `XxxScreen.kt`:
   - `XxxScreen` is the container. It takes the ViewModel, collects its state and wires callbacks.

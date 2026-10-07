@@ -36,6 +36,36 @@ import eu.alsk.transmissionremote.connection.ConnectionFormState
 import eu.alsk.transmissionremote.connection.ConnectionViewModel
 import eu.alsk.transmissionremote.theme.AppTheme
 
+/** What [ConnectionContent] shows: field values, the errors to display, and the URL preview. */
+private data class ConnectionContentState(
+    val name: String,
+    val host: String,
+    val hostError: String?,
+    val port: String,
+    val portError: String?,
+    val rpcPath: String,
+    val rpcPathError: String?,
+    val useHttps: Boolean,
+    val username: String,
+    val password: String,
+    /** Full RPC URL, or null while the form is invalid. */
+    val rpcUrl: String?,
+)
+
+private fun ConnectionFormState.toContentState() = ConnectionContentState(
+    name = name,
+    host = host,
+    hostError = hostError.takeIf { showErrors },
+    port = port,
+    portError = portError.takeIf { showErrors },
+    rpcPath = rpcPath,
+    rpcPathError = rpcPathError.takeIf { showErrors },
+    useHttps = useHttps,
+    username = username,
+    password = password,
+    rpcUrl = if (isValid) toConnection().rpcUrl else null,
+)
+
 @Composable
 internal fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { ConnectionViewModel() }) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -49,7 +79,7 @@ internal fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { Conne
     }
 
     ConnectionContent(
-        state = state,
+        state = state.toContentState(),
         snackbarHostState = snackbarHostState,
         onNameChange = viewModel::onNameChange,
         onHostChange = viewModel::onHostChange,
@@ -65,7 +95,7 @@ internal fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { Conne
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ConnectionContent(
-    state: ConnectionFormState,
+    state: ConnectionContentState,
     snackbarHostState: SnackbarHostState,
     onNameChange: (String) -> Unit,
     onHostChange: (String) -> Unit,
@@ -114,7 +144,7 @@ private fun ConnectionContent(
                         label = "Host",
                         value = state.host,
                         placeholder = "192.168.1.10 or nas.local",
-                        error = state.hostError.takeIf { state.showErrors },
+                        error = state.hostError,
                         keyboardType = KeyboardType.Uri,
                     ),
                     onValueChange = onHostChange,
@@ -124,7 +154,7 @@ private fun ConnectionContent(
                         state = FormFieldState(
                             label = "Port",
                             value = state.port,
-                            error = state.portError.takeIf { state.showErrors },
+                            error = state.portError,
                             keyboardType = KeyboardType.Number,
                         ),
                         onValueChange = onPortChange,
@@ -134,7 +164,7 @@ private fun ConnectionContent(
                         state = FormFieldState(
                             label = "RPC path",
                             value = state.rpcPath,
-                            error = state.rpcPathError.takeIf { state.showErrors },
+                            error = state.rpcPathError,
                             keyboardType = KeyboardType.Uri,
                         ),
                         onValueChange = onRpcPathChange,
@@ -154,9 +184,9 @@ private fun ConnectionContent(
                 )
                 PasswordField(state.password, onPasswordChange, onDone = onSave)
 
-                if (state.isValid) {
+                if (state.rpcUrl != null) {
                     Text(
-                        state.toConnection().rpcUrl,
+                        state.rpcUrl,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -170,41 +200,54 @@ private fun ConnectionContent(
     }
 }
 
-private val dummyConnectionFormState = ConnectionFormState(
+private val dummyConnectionContentState = ConnectionContentState(
     name = "Home server",
     host = "192.168.1.10",
+    hostError = null,
+    port = "9091",
+    portError = null,
+    rpcPath = "/transmission/rpc",
+    rpcPathError = null,
     useHttps = true,
     username = "admin",
     password = "secret",
+    rpcUrl = "https://192.168.1.10:9091/transmission/rpc",
 )
 
-private val dummyConnectionFormStateWithErrors = ConnectionFormState(
+private val dummyConnectionContentStateWithErrors = ConnectionContentState(
+    name = "",
     host = "http://nas.local",
+    hostError = "Enter the host without http:// or https://",
     port = "99999",
+    portError = "Port must be between 1 and 65535",
     rpcPath = "rpc",
-    showErrors = true,
+    rpcPathError = "Path must start with /",
+    useHttps = false,
+    username = "",
+    password = "",
+    rpcUrl = null,
 )
 
 @Preview(name = "Connection content – filled in", showBackground = true)
 @Composable
 private fun ConnectionContentFilledPreview() {
-    ConnectionContentPreview(dummyConnectionFormState)
+    ConnectionContentPreview(dummyConnectionContentState)
 }
 
 @Preview(name = "Connection content – filled in, dark", showBackground = true)
 @Composable
 private fun ConnectionContentFilledDarkPreview() {
-    ConnectionContentPreview(dummyConnectionFormState, darkTheme = true)
+    ConnectionContentPreview(dummyConnectionContentState, darkTheme = true)
 }
 
 @Preview(name = "Connection content – validation errors", showBackground = true)
 @Composable
 private fun ConnectionContentErrorsPreview() {
-    ConnectionContentPreview(dummyConnectionFormStateWithErrors)
+    ConnectionContentPreview(dummyConnectionContentStateWithErrors)
 }
 
 @Composable
-private fun ConnectionContentPreview(state: ConnectionFormState, darkTheme: Boolean = false) {
+private fun ConnectionContentPreview(state: ConnectionContentState, darkTheme: Boolean = false) {
     AppTheme(darkTheme = darkTheme) {
         ConnectionContent(
             state = state,
