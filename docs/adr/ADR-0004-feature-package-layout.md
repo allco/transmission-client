@@ -1,6 +1,7 @@
 # ADR-0004: Feature packages keep the ViewModel at the root and composables in `views/`
 
-- **Status:** Accepted
+- **Status:** Accepted, amended by [ADR-0005](ADR-0005-file-or-folder-per-component.md)
+  (components with parts are folders inside `views/`)
 - **Date:** 2026-10-07
 
 ## Context
@@ -20,20 +21,23 @@ ui/
 ├── connection/
 │   ├── ConnectionViewModel.kt      ViewModel + its UI state (ConnectionFormState)
 │   └── views/
-│       ├── ConnectionScreen.kt     ConnectionScreen (container) + ConnectionContent (renderer)
-│       ├── FormField.kt
-│       └── PasswordField.kt
+│       └── connectionScreen/       ConnectionScreen and its parts (ADR-0005)
+│           ├── ConnectionScreen.kt ConnectionScreen (container) + ConnectionContent (renderer)
+│           ├── FormField.kt
+│           └── PasswordField.kt
 └── splash/
     └── views/
-        ├── SplashScreen.kt
-        └── AppLogo.kt
+        └── splashScreen/
+            ├── SplashScreen.kt
+            └── AppLogo.kt
 ```
 
 - `ui/<feature>/` holds the feature's ViewModel and the UI state it exposes, e.g.
   `ConnectionViewModel.kt`. Non-UI logic used only by this feature also goes here.
 - `ui/<feature>/views/` holds every Composable of the feature, one per file under ADR-0001, plus
   any `<FunctionName>State` classes they declare
-  ([ADR-0003](ADR-0003-state-class-for-composables-with-many-parameters.md)). Packages are
+  ([ADR-0003](ADR-0003-state-class-for-composables-with-many-parameters.md)). A view with parts
+  is a folder of its own (ADR-0005). Packages are
   `eu.alsk.transmissionremote.ui.<feature>` and `eu.alsk.transmissionremote.ui.<feature>.views`.
 - A feature without a ViewModel, like `splash`, has only `views/`.
 - App-wide UI that isn't a feature stays in its own package under `ui/`, e.g. `ui/theme/`.

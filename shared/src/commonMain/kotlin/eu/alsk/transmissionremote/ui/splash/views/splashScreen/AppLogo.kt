@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.ui.splash.views
+package eu.alsk.transmissionremote.ui.splash.views.splashScreen
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size

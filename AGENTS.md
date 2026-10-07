@@ -73,6 +73,10 @@ In short:
   `FormFieldState` in `FormField.kt`.
 - **ADR-0004:** each feature is a package `ui/<feature>/` holding its ViewModel and UI state, with all
   its composables in `ui/<feature>/views/`.
+- **ADR-0005:** a component (ViewModel, view, use case, …) that fits in one file is one file. If it
+  has parts used only by it, it becomes a folder named after it in camelCase
+  (`connectionScreen/ConnectionScreen.kt` + `FormField.kt` + `PasswordField.kt`). A part used by a
+  second component moves up and becomes a component itself.
 
 ## Transmission RPC
 

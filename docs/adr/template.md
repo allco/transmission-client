@@ -1,6 +1,6 @@
 <!--
 Copy this file to docs/adr/ADR-<number>-<title-in-kebab-case>.md, using the next four-digit
-number, e.g. ADR-0005-use-ktor-for-rpc.md. Use the same number and title in the heading below,
+number, e.g. ADR-0006-use-ktor-for-rpc.md. Use the same number and title in the heading below,
 then add a row to the table in docs/README.md. Delete this comment.
 -->
 # ADR-NNNN: Title in the imperative

@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.ui.connection.views
+package eu.alsk.transmissionremote.ui.connection.views.connectionScreen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

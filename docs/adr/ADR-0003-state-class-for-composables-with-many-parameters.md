@@ -28,7 +28,7 @@ same arguments. They also hide which values belong together.
   the ViewModel's `ConnectionFormState` and a `SnackbarHostState`, which makes two, so it doesn't
   need its own class.
 
-Example, in `ui/connection/views/FormField.kt`:
+Example, in `ui/connection/views/connectionScreen/FormField.kt`:
 
 ```kotlin
 internal data class FormFieldState(
