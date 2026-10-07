@@ -1,6 +1,6 @@
 # ADR-0006: Features are top-level packages, with the ViewModel at the root and composables in `views/`
 
-- **Status:** Accepted
+- **Status:** Accepted. Amended 2026-10-08: a ViewModel's UI state class gets its own file.
 - **Date:** 2026-10-07
 - **Supersedes:** [ADR-0004](ADR-0004-feature-package-layout.md)
 
@@ -22,7 +22,8 @@ role:
 eu/alsk/transmissionremote/
 ├── App.kt                          entry point and top-level navigation
 ├── connection/                     feature            → later feature:connection
-│   ├── ConnectionViewModel.kt      ViewModel + its UI state (ConnectionFormState)
+│   ├── ConnectionViewModel.kt      ViewModel
+│   ├── ConnectionFormState.kt      the UI state it exposes, in its own file
 │   └── views/                      one screen, so its parts sit here directly (ADR-0005)
 │       ├── ConnectionScreen.kt     ConnectionScreen (container) + ConnectionContent (renderer)
 │       ├── FormField.kt
@@ -37,7 +38,8 @@ eu/alsk/transmissionremote/
 ```
 
 - A feature package `<feature>/` holds:
-  - the feature's ViewModel and the UI state it exposes, e.g. `ConnectionViewModel.kt`;
+  - the feature's ViewModel, e.g. `ConnectionViewModel.kt`, and the UI state it exposes in a
+    separate file, e.g. `ConnectionFormState.kt`;
   - use cases and other logic used only by this feature;
   - `views/`, with every Composable of the feature: one per file
     ([ADR-0001](ADR-0001-one-composable-per-file.md)), plus their `<FunctionName>State` classes
