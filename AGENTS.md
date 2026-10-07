@@ -1,12 +1,13 @@
 # AGENTS.md
 
-This file provides guidance to AI coding agents (Claude Code, Codex, Gemini CLI and others) when working with code in this repository.
+This file guides AI coding agents (Claude Code, Codex, Gemini CLI and others) when they work with
+code in this repository.
 
 ## What this is
 
-Kotlin Multiplatform + Compose Multiplatform client for a remote Transmission BitTorrent daemon,
-targeting Android, iOS, Linux desktop (JVM) and the web (Wasm and JS). The package is
-`eu.alsk.transmissionremote`.
+This project is a Kotlin Multiplatform + Compose Multiplatform client for a remote Transmission
+BitTorrent daemon. It targets Android, iOS, Linux desktop (JVM) and the web (Wasm and JS). The
+package is `eu.alsk.transmissionremote`.
 
 ## Commands
 
@@ -20,85 +21,108 @@ targeting Android, iOS, Linux desktop (JVM) and the web (Wasm and JS). The packa
 ./gradlew :shared:compileKotlinIosSimulatorArm64                # iOS klib compiles on Linux too
 ```
 
-- iOS apps can only be built and run on macOS: open `iosApp/iosApp.xcodeproj`. Xcode runs
-  `:shared:embedAndSignAppleFrameworkForXcode` and links the static `Shared` framework. Set
-  `TEAM_ID` in `iosApp/Configuration/Config.xcconfig` to run on a device.
-- Running the desktop app headless (Xvfb) needs `SKIKO_RENDER_API=SOFTWARE`. Xvfb has no GL.
-- There are no tests or linters set up yet.
+- You can build and run the iOS app only on macOS. Open `iosApp/iosApp.xcodeproj`. Xcode runs
+  `:shared:embedAndSignAppleFrameworkForXcode` and links the static `Shared` framework. To run the
+  app on a device, set `TEAM_ID` in `iosApp/Configuration/Config.xcconfig`.
+- To run the desktop app headless (Xvfb), set `SKIKO_RENDER_API=SOFTWARE`. Xvfb has no GL.
+- The project has no tests and no code linters yet.
 
 ## Architecture
 
-- **`shared`** holds all UI and logic in `commonMain`, and is the only module with real code.
-  Its Android target uses the AGP 9 `com.android.kotlin.multiplatform.library` plugin, configured
-  in a `kotlin { android { … } }` block (the old `androidLibrary { }` is deprecated). It also
-  builds the iOS `Shared` framework.
+- **`shared`** holds all UI and logic in `commonMain`. It is the only module with real code.
+  Its Android target uses the AGP 9 `com.android.kotlin.multiplatform.library` plugin. A
+  `kotlin { android { … } }` block configures this plugin. The old `androidLibrary { }` block is
+  deprecated. The `shared` module also builds the iOS `Shared` framework.
 - **`androidApp`**, **`desktopApp`** and **`webApp`** are thin entry points that only call `App()`.
-  The iOS equivalent is `shared/src/iosMain/.../MainViewController.kt`, called from SwiftUI in
-  `iosApp/iosApp/ContentView.swift`. With AGP 9, `com.android.application` can't be combined with
-  the KMP plugin, which is why Android needs its own module.
-- Versions live in `gradle/libs.versions.toml`. Material3 is versioned separately from Compose
-  Multiplatform (`compose-material3`).
+  The iOS equivalent is `shared/src/iosMain/.../MainViewController.kt`. SwiftUI calls it from
+  `iosApp/iosApp/ContentView.swift`. With AGP 9, you cannot combine `com.android.application` with
+  the KMP plugin. For this reason, Android needs its own module.
+- `gradle/libs.versions.toml` holds the versions. Material3 has its own version
+  (`compose-material3`), separate from the Compose Multiplatform version.
 
-Inside `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/`:
+The directory `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/` holds these items:
 
-- `App.kt`: theme plus top-level navigation. A `rememberSaveable` enum switches
-  Splash → Connection inside a `Crossfade`. There is no navigation library.
-- `<feature>/` (`connection/`, `splash/`): one root package per feature (ADR-0006), holding its
-  ViewModel and UI state, with its composables in `<feature>/views/`. A screen is a stateful
-  `XxxScreen(viewModel = viewModel { … })` that collects a `StateFlow` and passes the state and
-  callbacks to a stateless `XxxContent` in the same file.
-  ViewModels come from `org.jetbrains.androidx.lifecycle`, and form state is an immutable data
+- `App.kt` holds the theme and the top-level navigation. A `rememberSaveable` enum switches from
+  Splash to Connection inside a `Crossfade`. The app uses no navigation library.
+- `<feature>/` (`connection/`, `splash/`): each feature has one root package (ADR-0006). This
+  package holds the ViewModel and the UI state of the feature. `<feature>/views/` holds the
+  composables of the feature.
+  A screen is a stateful `XxxScreen(viewModel = viewModel { … })`. It collects a `StateFlow` and
+  passes the state and the callbacks to a stateless `XxxContent` in the same file.
+  The ViewModels come from `org.jetbrains.androidx.lifecycle`. The form state is an immutable data
   class with computed validation properties.
-- `theme/Theme.kt`: Material 3 light/dark colour schemes (red seed). The Figma design file uses
-  the same palette as colour variables.
-- `data/`: `ConnectionRepository` is an in-memory singleton, so saved connections don't persist
-  yet. There is no networking code yet.
+- `theme/Theme.kt` holds the Material 3 light and dark colour schemes (red seed). The Figma design
+  file uses the same palette as colour variables.
+- In `data/`, `ConnectionRepository` is an in-memory singleton. Thus the app does not persist the
+  saved connections yet. The project has no networking code yet.
 
 ## Conventions
 
-The patterns this codebase follows are recorded as ADRs in `docs/adr/` (index: `docs/README.md`).
-Follow them. Keep them current as decisions are made: when a new pattern is agreed, record it in
-the same change as a new ADR from `docs/adr/template.md`, named
-`ADR-<number>-<title-in-kebab-case>.md`. When a pattern changes, supersede or amend the affected
-ADR, and fix example paths in other ADRs and in this file.
-In short:
+The ADRs in `docs/adr/` record the patterns that this codebase follows. `docs/README.md` holds the
+index of the ADRs. Obey the ADRs. Keep the ADRs current when we make decisions:
 
-- **ADR-0001:** each non-trivial Composable gets its own file, with its `@Preview` functions in the
-  same file. Preview sample data goes in a file-level `private val dummy<ElementName>`. A screen's
-  container `XxxScreen` (takes the ViewModel, no previews) and its renderer `XxxContent` (takes UI
-  state, `private`, has the previews) share one file, `XxxScreen.kt`.
-- **ADR-0002:** everything not called from another Gradle module or from Swift is `internal`, or
-  `private` if it's used in a single file. Today the only public declarations are `App()` and
-  `MainViewController()`. This prepares for splitting `shared` into several modules later.
-- **ADR-0003:** a Composable with more than two data parameters (not counting callbacks, `Modifier`
-  or a ViewModel) takes a `<FunctionName>State` data class declared at the top of its file, e.g.
+1. When we agree on a new pattern, record it as a new ADR in the same change.
+2. Use `docs/adr/template.md` for the new ADR.
+3. Name the new ADR `ADR-<number>-<title-in-kebab-case>.md`.
+4. When a pattern changes, supersede or amend the affected ADR.
+5. Then fix the example paths in the other ADRs and in this file.
+
+This list gives a short summary of each ADR:
+
+- **ADR-0001:** Put each non-trivial Composable in its own file. Put its `@Preview` functions in
+  the same file. Put the preview sample data in a file-level `private val dummy<ElementName>`.
+  Put the container `XxxScreen` of a screen and its renderer `XxxContent` in one file,
+  `XxxScreen.kt`. `XxxScreen` takes the ViewModel and has no previews. `XxxContent` takes the UI
+  state, is `private` and has the previews.
+- **ADR-0002:** Make a declaration `internal` if no other Gradle module and no Swift code calls it.
+  Make it `private` if only one file uses it. Today the only public declarations are `App()` and
+  `MainViewController()`. This rule prepares `shared` so that we can split it into several modules
+  later.
+- **ADR-0003:** If a Composable has more than two data parameters, make it take a
+  `<FunctionName>State` data class. Do not count callbacks, `Modifier` or a ViewModel as data
+  parameters. Declare this class at the top of the file of the Composable, for example
   `FormFieldState` in `FormField.kt`.
-- **ADR-0005:** a component (ViewModel, view, use case, …) that fits in one file is one file. If it
-  has parts used only by it, it becomes a folder named after it in camelCase, e.g.
-  `connectionScreen/` — but only once its package holds a second component. Until then the parts
-  sit directly in the package (today: `connection/views/ConnectionScreen.kt` + `FormField.kt` +
-  `PasswordField.kt`). A part used by a second component moves up and becomes a component itself.
-- **ADR-0006:** the root package holds `App.kt` and one package per feature, named after the feature
-  (`connection/`, `splash/`). There is no `ui/`. A feature keeps its ViewModel at its root and its
-  composables in `views/`. A ViewModel's UI state class gets its own file
-  (`ConnectionFormState.kt`). Code shared by several features goes in role-named root packages
-  (`theme/`, `data/`). ADR-0006 supersedes ADR-0004.
-- **ADR-0007:** the Gradle daemon runs on Amazon Corretto 25, set in
-  `gradle/gradle-daemon-jvm.properties` with direct, version-pinned `corretto.aws` download links.
-  No foojay: don't re-add the resolver plugin or run `updateDaemonJvm`.
-- **ADR-0008:** Composables take exactly the data they render plus their callbacks (interface
-  segregation). Don't pass a ViewModel state or model a view only partly uses. Give it a
-  display-ready `XxxState` instead (e.g. `ConnectionContentState`), mapped next to `XxxScreen`.
+- **ADR-0005:**
+  - If a component (ViewModel, view, use case, …) fits in one file, keep it in one file.
+  - If a component has parts that only this component uses, put the component and its parts in a
+    folder. Name the folder after the component in camelCase, for example `connectionScreen/`.
+  - Make this folder only when the package of the component holds a second component. Until then,
+    put the parts directly in the package (today: `connection/views/ConnectionScreen.kt`,
+    `FormField.kt` and `PasswordField.kt`).
+  - If a second component uses a part, move the part higher in the folder tree. The part
+    then becomes a component itself.
+- **ADR-0006:**
+  - The root package holds `App.kt` and one package for each feature. Name each feature package
+    after the feature (`connection/`, `splash/`). The project has no `ui/` package.
+  - Put the ViewModel of a feature at the root of the feature package. Put the composables of the
+    feature in `views/`.
+  - Put the UI state class of a ViewModel in its own file (`ConnectionFormState.kt`).
+  - Put code that several features use in root packages that have the name of their role
+    (`theme/`, `data/`).
+  - ADR-0006 supersedes ADR-0004.
+- **ADR-0007:** The Gradle daemon runs on Amazon Corretto 25. `gradle/gradle-daemon-jvm.properties`
+  sets this JVM with direct `corretto.aws` download links that pin the version. Do not use foojay.
+  Do not add the resolver plugin again. Do not run `updateDaemonJvm`.
+- **ADR-0008:** A Composable takes exactly the data that it renders, plus its callbacks (interface
+  segregation). Do not pass a ViewModel state or a model that the view uses only in part. Give the
+  view a display-ready `XxxState` instead (for example `ConnectionContentState`). Map this state
+  next to `XxxScreen`.
+- **ADR-0009:** Use the `asd-ste100` skill to write all Markdown files, KDoc, code comments and
+  commit messages in Simplified Technical English. Use the Strict mode for `AGENTS.md`, code
+  comments and KDoc, and the STE-flavored mode for `README.md`, ADRs and `docs/reference/`. Before
+  you commit, run `python3 -I .claude/skills/asd-ste100/scripts/ste-lint.py <file.md>` on each
+  changed Markdown file.
 
 ## Transmission RPC
 
-`docs/reference/transmission-rpc-api.md` is the API reference to build the network layer from.
-Key points:
+`docs/reference/transmission-rpc-api.md` is the API reference. Build the network layer from this
+reference. The main points are:
 
-- **Two wire formats:** Transmission 4.1+ speaks JSON-RPC 2.0 with `snake_case` names; ≤ 4.0
-  speaks the legacy format with `kebab-case`/`camelCase` names. Support both, and pick the format
-  based on whether the first HTTP 409 response carries an `X-Transmission-Rpc-Version` header.
-- **Session id:** every request needs `X-Transmission-Session-Id`. On 409, store the new value and
-  resend the request.
-- **Web build:** browsers need CORS headers that Transmission doesn't send, so the web build only
-  works behind a proxy or from the same origin.
+- **Two wire formats:** Transmission 4.1+ uses JSON-RPC 2.0 with `snake_case` names. Transmission
+  ≤ 4.0 uses the legacy format with `kebab-case`/`camelCase` names. Support both formats. Select
+  the format according to one condition: whether the first HTTP 409 response has an
+  `X-Transmission-Rpc-Version` header.
+- **Session id:** Every request needs the `X-Transmission-Session-Id` header. If a response has
+  the status 409, store the new value. Then send the request again.
+- **Web build:** Browsers need CORS headers, but Transmission does not send these headers. Thus
+  the web build works only behind a proxy or from the same origin.

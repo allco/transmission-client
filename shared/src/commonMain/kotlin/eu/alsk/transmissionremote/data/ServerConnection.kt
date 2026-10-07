@@ -1,6 +1,6 @@
 package eu.alsk.transmissionremote.data
 
-/** Connection details for a remote Transmission daemon's RPC endpoint. */
+/** Holds the connection details for the RPC endpoint of a remote Transmission daemon. */
 internal data class ServerConnection(
     val name: String,
     val host: String,

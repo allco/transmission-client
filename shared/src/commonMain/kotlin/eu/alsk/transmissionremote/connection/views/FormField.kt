@@ -15,7 +15,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eu.alsk.transmissionremote.theme.AppTheme
 
-/** What a [FormField] shows. [error] is shown below the field and marks it invalid when not null. */
+/**
+ * Holds the data that a [FormField] shows.
+ * If [error] is not null, the field shows [error] below itself and marks itself as invalid.
+ */
 internal data class FormFieldState(
     val label: String,
     val value: String,

@@ -36,7 +36,10 @@ import eu.alsk.transmissionremote.connection.ConnectionFormState
 import eu.alsk.transmissionremote.connection.ConnectionViewModel
 import eu.alsk.transmissionremote.theme.AppTheme
 
-/** What [ConnectionContent] shows: field values, the errors to display, and the URL preview. */
+/**
+ * Holds the data that [ConnectionContent] shows: the field values, the errors to show and the URL
+ * preview.
+ */
 private data class ConnectionContentState(
     val name: String,
     val host: String,
@@ -48,7 +51,7 @@ private data class ConnectionContentState(
     val useHttps: Boolean,
     val username: String,
     val password: String,
-    /** Full RPC URL, or null while the form is invalid. */
+    /** The full RPC URL. The value is null while the form is invalid. */
     val rpcUrl: String?,
 )
 

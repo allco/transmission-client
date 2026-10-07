@@ -2,7 +2,10 @@ package eu.alsk.transmissionremote.connection
 
 import eu.alsk.transmissionremote.data.ServerConnection
 
-/** The connection form as the user is editing it, with its validation rules. */
+/**
+ * Holds the connection form while the user edits it.
+ * The class also holds the validation rules of the form.
+ */
 internal data class ConnectionFormState(
     val name: String = "",
     val host: String = "",
@@ -11,7 +14,7 @@ internal data class ConnectionFormState(
     val useHttps: Boolean = false,
     val username: String = "",
     val password: String = "",
-    /** Validation errors are only shown after the first save attempt. */
+    /** The UI shows validation errors only after the user first tries to save the form. */
     val showErrors: Boolean = false,
     val saved: Boolean = false,
 ) {

@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eu.alsk.transmissionremote.theme.AppTheme
 
-/** A filled circle with a "download" arrow. */
+/** Draws a filled circle with a "download" arrow. */
 @Composable
 internal fun AppLogo(background: Color, foreground: Color, modifier: Modifier = Modifier) {
     Canvas(modifier) {
