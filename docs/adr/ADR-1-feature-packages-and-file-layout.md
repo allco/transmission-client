@@ -1,4 +1,4 @@
-# ADR-1: Feature packages and file layout
+# ADR-1: Feature packages, file layout and blocks
 
 - **Status:** Accepted
 - **Date:** 2026-10-07
@@ -39,14 +39,14 @@ eu/alsk/transmissionremote/
 └── data/                           shared data        → later core:data / core:network
 ```
 
-The shared UI is not in this tree. It is in the `:designsystem` module
+The shared UI is not in this tree. It is in the `:blocks:designsystem` module
 ([ADR-6](ADR-6-design-system-module.md)).
 
 - There is no `ui/` package.
 - Code that more than one feature uses is not a feature. Put it in a package at the root that has
   the name of its role, for example `data/` for data and networking. Add a new role package only
   when a second feature needs the code.
-- Shared UI is in the `:designsystem` module, not in a role package
+- Shared UI is in the `:blocks:designsystem` module, not in a role package
   ([ADR-6](ADR-6-design-system-module.md)).
 - Give a feature a name that tells what the user does, for example `connection` or `torrents`. A
   feature name must not be the same as a role name.
@@ -58,7 +58,7 @@ flowchart TD
     App[App.kt] --> connection
     App --> splash
     connection --> data
-    connection --> designsystem[":designsystem module"]
+    connection --> designsystem[":blocks:designsystem"]
     splash --> designsystem
 ```
 
@@ -107,8 +107,8 @@ A component is a ViewModel, a UI element, a use case or a repository.
 
 Today each feature has one screen. Thus `views/` holds the screen and its parts directly (see the
 tree in section 1). `ConnectionScreen` has no parts today, because it uses the components of the
-`:designsystem` module. This example shows `connection/views/` after we add a second screen, and
-after `ConnectionScreen` gets two parts:
+`:blocks:designsystem` module. This example shows `connection/views/` after we add a second
+screen, and after `ConnectionScreen` gets two parts:
 
 ```
 connection/views/
@@ -119,11 +119,35 @@ connection/views/
 └── ServerListScreen.kt                 one file. It becomes serverListScreen/ when it has parts.
 ```
 
+### 4. Blocks: the modules in `blocks/`
+
+The folder `blocks/` holds the blocks of the app. A block is a Gradle module of the app: a feature
+or a shared part. The Gradle path of a block is `:blocks:<name>`.
+
+```
+blocks/
+└── designsystem/        :blocks:designsystem (ADR-6)
+shared/                  the features as packages; connects the blocks; builds the iOS framework
+androidApp/ desktopApp/ webApp/ iosApp/
+```
+
+- Today `blocks/` holds one block: `designsystem`
+  ([ADR-6](ADR-6-design-system-module.md)).
+- We plan to move each feature and each shared part from `shared` to a block of its own, for
+  example `:blocks:connection` or `:blocks:data`. Until then, the features are packages in
+  `shared` (sections 1 to 3).
+- A block keeps the package layout of sections 2 and 3. Its root package is the package of the
+  feature or the role, for example `eu.alsk.transmissionremote.connection`.
+- Give a block the name of its feature or its role, in camelCase.
+- The entry-point modules (`androidApp`, `desktopApp`, `webApp`) and `iosApp` stay at the root.
+  `shared` stays at the root, too.
+
 ## Consequences
 
 - The root of the source tree lists the features. Each feature maps to a future
   `feature:<name>` module. The role packages map to `core:*` modules.
 - A new feature gets a new root package. Do not add it as a sub-package of a feature.
+- When a feature moves to a block, its packages do not change. Only the Gradle module changes.
 - The tree shows ownership. A change to a file in the folder of a component has no effect on
   other components.
 - The tree has no nesting until the nesting separates something.

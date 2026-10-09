@@ -1,6 +1,6 @@
 # Design system
 
-This document lists the tokens, the icons and the components of the `:designsystem` module.
+This document lists the tokens, the icons and the components of the `:blocks:designsystem` module.
 [ADR-6](../adr/ADR-6-design-system-module.md) records the decision and the rules. The page
 "Design System" of the [Figma file](https://www.figma.com/design/2UXyddsaD6zijr7h0kdmox) is the
 source of the tokens.
@@ -18,7 +18,7 @@ source of the tokens.
 ## 1. Module layout
 
 ```
-designsystem/src/commonMain/kotlin/eu/alsk/transmissionremote/designsystem/
+blocks/designsystem/src/commonMain/kotlin/eu/alsk/transmissionremote/designsystem/
 ├── theme/
 │   ├── AppTheme.kt      AppTheme { … } and the AppTheme object with the tokens
 │   ├── Color.kt         the light and dark colour schemes, StatusColors

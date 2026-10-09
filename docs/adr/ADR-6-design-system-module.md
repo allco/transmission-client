@@ -1,4 +1,4 @@
-# ADR-6: The design system is the `:designsystem` module
+# ADR-6: The design system is the `:blocks:designsystem` module
 
 - **Status:** Accepted
 - **Date:** 2026-10-09
@@ -17,7 +17,9 @@ part that can be a module of its own.
 
 ### 1. The module
 
-The Gradle module `:designsystem` holds the design system. The `shared` module uses it.
+The Gradle module `:blocks:designsystem`, in the folder `blocks/designsystem/`, holds the design
+system. It is the first block ([ADR-1](ADR-1-feature-packages-and-file-layout.md), section 4).
+The `shared` module uses it.
 
 The diagram shows the dependencies between the modules.
 
@@ -27,7 +29,7 @@ flowchart TD
     desktopApp --> shared
     webApp --> shared
     iosApp[iosApp, Swift] --> shared
-    shared --> designsystem[":designsystem"]
+    shared --> designsystem[":blocks:designsystem"]
 ```
 
 The module has three packages under `eu.alsk.transmissionremote.designsystem`:
@@ -96,6 +98,7 @@ When you change a token, change it in Figma and in the code in the same change.
 
 - Features look the same, because they use the same components and tokens.
 - A change to a token or a component is in one place.
-- `shared` compiles less code. Gradle can compile `:designsystem` in parallel and from its cache.
+- `shared` compiles less code. Gradle can compile `:blocks:designsystem` in parallel and from its
+  cache.
 - A new component needs a Figma change, a code change and a doc change.
 - The module is a step to the module split in ADR-2. Its public API is explicit from the start.

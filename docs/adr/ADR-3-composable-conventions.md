@@ -133,8 +133,8 @@ A Composable has these kinds of parameters:
 - Order the parameters as Compose does: the required parameters, then `modifier`, then the
   optional parameters.
 
-Example, in `designsystem/…/component/TextField.kt`. `TextField` has two state values (`value`
-and `error`). Thus it has no state class:
+Example, in `blocks/designsystem/…/component/TextField.kt`. `TextField` has two state values
+(`value` and `error`). Thus it has no state class:
 
 ```kotlin
 @Composable

@@ -28,7 +28,7 @@ dependencyResolutionManagement {
     }
 }
 
-include(":designsystem")
+include(":blocks:designsystem")
 include(":shared")
 include(":androidApp")
 include(":desktopApp")

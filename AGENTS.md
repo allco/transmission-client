@@ -18,7 +18,7 @@ package is `eu.alsk.transmissionremote`.
 ./gradlew :webApp:wasmJsBrowserDevelopmentRun  # web dev server (Wasm) on http://localhost:8080
 ./gradlew :webApp:jsBrowserDevelopmentRun      # web dev server (JS)
 ./gradlew :shared:compileKotlinJvm :shared:compileAndroidMain   # quick compile check of shared UI
-./gradlew :designsystem:compileKotlinJvm                        # quick compile check of the design system
+./gradlew :blocks:designsystem:compileKotlinJvm                 # quick compile check of the design system
 ./gradlew :shared:compileKotlinIosSimulatorArm64                # iOS klib compiles on Linux too
 ```
 
@@ -34,8 +34,12 @@ package is `eu.alsk.transmissionremote`.
   AGP 9 `com.android.kotlin.multiplatform.library` plugin. A `kotlin { android { … } }` block
   configures this plugin. The old `androidLibrary { }` block is deprecated. The `shared` module
   also builds the iOS `Shared` framework.
-- **`designsystem`** holds the design system: the theme, the tokens, the icons and the generic
-  components (ADR-6). `shared` uses it. The Figma file is the source of its tokens.
+- **`blocks/`** holds the blocks: the Gradle modules of the app, for features and shared parts.
+  The Gradle path of a block is `:blocks:<name>` (ADR-1).
+  - **`blocks/designsystem`** (`:blocks:designsystem`) holds the design system: the theme, the
+    tokens, the icons and the generic components (ADR-6). `shared` uses it. The Figma file is the
+    source of its tokens.
+  - Later, each feature moves from `shared` to a block of its own.
 - **`androidApp`**, **`desktopApp`** and **`webApp`** are thin entry points that only call `App()`.
   The iOS equivalent is `shared/src/iosMain/.../MainViewController.kt`. SwiftUI calls it from
   `iosApp/iosApp/ContentView.swift`. With AGP 9, you cannot combine `com.android.application` with
@@ -45,7 +49,7 @@ package is `eu.alsk.transmissionremote`.
 
 The directory `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/` holds these items:
 
-- `App.kt` applies `AppTheme` from `:designsystem` and holds the top-level navigation. A
+- `App.kt` applies `AppTheme` from `:blocks:designsystem` and holds the top-level navigation. A
   `rememberSaveable` enum switches from Splash to Connection inside a `Crossfade`. The app uses no
   navigation library.
 - `<feature>/` (`connection/`, `splash/`): each feature has one root package (ADR-1). This
@@ -88,14 +92,15 @@ This list gives a short summary of each ADR, in groups:
 
 **Code structure**
 
-- **ADR-1:** Feature packages and file layout.
+- **ADR-1:** Feature packages, file layout and blocks.
+  - Put a new Gradle module of the app in `blocks/`. Give it the Gradle path `:blocks:<name>`.
   - The root package holds `App.kt` and one package for each feature. Name each feature package
     after the feature (`connection/`, `splash/`). The project has no `ui/` package.
   - Put the ViewModel of a feature at the root of the feature package. Put the UI state class and
     the event class of the ViewModel in their own files (`ConnectionContentState.kt`,
     `ConnectionEvent.kt`). Put the Composables of the feature in `views/`.
   - Put code that several features use in root packages that have the name of their role
-    (`data/`). Put shared UI in the `:designsystem` module.
+    (`data/`). Put shared UI in the `:blocks:designsystem` module.
   - If a component (ViewModel, view, use case, …) fits in one file, keep it in one file.
   - If a component has parts that only this component uses, put the component and its parts in a
     folder. Name the folder after the component in camelCase, for example `connectionScreen/`.
@@ -124,13 +129,13 @@ This list gives a short summary of each ADR, in groups:
     put config values in a state class.
   - If a Composable has more than two state values (values that change at runtime), make it take
     a `<FunctionName>State` data class. Declare this class at the top of the file of the
-    Composable. The ViewModel or the parent makes it. `TextField` in `:designsystem` has two state
-    values, `value` and `error`, so it has no state class.
+    Composable. The ViewModel or the parent makes it. `TextField` in `:blocks:designsystem` has
+    two state values, `value` and `error`, so it has no state class.
   - The ViewModel makes the state of `XxxContent` directly (`ConnectionViewModel` →
     `ConnectionContentState`). Keep the working data of the ViewModel private. Send a one-time
     signal as an event (`ConnectionEvent`), not as a state field.
 
-- **ADR-6:** The `:designsystem` module holds the design system.
+- **ADR-6:** The `:blocks:designsystem` module holds the design system.
   - Use its components (`Button`, `TextField`, `TopAppBar`, …) and its tokens (`AppTheme.colors`,
     `Spacing`, `Radius`, `AppIcons`). Do not use a Material 3 component when the module has one.
     Do not write colour values in feature code.

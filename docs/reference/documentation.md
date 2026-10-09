@@ -115,6 +115,7 @@ Use these words with these meanings only. Do not use the synonyms in the last co
 | user | The person who uses this app | customer, client |
 | server configuration | The data that this app keeps for one server: name, address, credentials | connection, profile, account |
 | feature | A part of this app that the user sees as a unit. One root package. See [Features](features.md). | module (a module is a Gradle module) |
+| block | A Gradle module of the app in `blocks/`: a feature or a shared part. See ADR-1. | building block, component (a component is a Composable or a class) |
 | screen | A feature that fills the window | page, view (except `views/`) |
 | remove | Take a torrent off the server list | delete (use "delete" only for files on the disk) |
 | check | Examine a value against a rule or an expected value | verify, confirm, validate (except in an identifier) |
@@ -139,7 +140,7 @@ Select the diagram type from the subject:
 | Navigation between screens | `flowchart` | Splash → Welcome or TorrentList |
 | A request and its replies | `sequenceDiagram` | The session id handshake (409, then retry) |
 | The states of an object | `stateDiagram-v2` | Torrent status: stopped, queued, checking, downloading, seeding |
-| Packages and their dependencies | `flowchart` or `classDiagram` | Feature packages that use `data/` and the `:designsystem` module |
+| Packages and their dependencies | `flowchart` or `classDiagram` | Feature packages that use `data/` and the `:blocks:designsystem` module |
 | Data and its fields | `classDiagram` or `erDiagram` | `ServerConnection`, the content state of a screen |
 | Work in time | `gantt` or `timeline` | A release plan |
 | Shares of a total | `pie` | Not often useful in docs |

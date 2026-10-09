@@ -12,7 +12,7 @@ the groups.
 
 | # | Decision |
 |---|---|
-| [ADR-1](adr/ADR-1-feature-packages-and-file-layout.md) | Features are packages at the root. A component is one file, or a folder when it has parts. |
+| [ADR-1](adr/ADR-1-feature-packages-and-file-layout.md) | Features are packages at the root. A component is one file, or a folder when it has parts. The modules of the app are blocks in `blocks/`. |
 | [ADR-2](adr/ADR-2-internal-by-default.md) | All declarations that other modules do not call are `internal` |
 
 ### UI
@@ -20,7 +20,7 @@ the groups.
 | # | Decision |
 |---|---|
 | [ADR-3](adr/ADR-3-composable-conventions.md) | Composables: files, previews, screens, state classes and the data that a Composable takes |
-| [ADR-6](adr/ADR-6-design-system-module.md) | The design system is the `:designsystem` module. Figma is the source of its tokens. |
+| [ADR-6](adr/ADR-6-design-system-module.md) | The design system is the `:blocks:designsystem` module. Figma is the source of its tokens. |
 
 ### Build
 
@@ -89,7 +89,7 @@ The [`reference/`](reference/) folder holds external material that the code reli
 - [Features](reference/features.md): the features of this app, with the status, the package and
   the RPC methods of each feature. The list includes planned features.
 - [Design system](reference/design-system.md): the tokens, the icons and the components of the
-  `:designsystem` module, and their names in Figma.
+  `:blocks:designsystem` module, and their names in Figma.
 - [Documentation](reference/documentation.md): how to write the docs, the comments and the commit
   messages. It gives the STE modes, the words of this project and the rules for Mermaid diagrams.
 - [Transmission RPC API](reference/transmission-rpc-api.md): the two wire formats (JSON-RPC 2.0 for
