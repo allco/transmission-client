@@ -59,8 +59,8 @@ gives the legacy name.
 
 ## 2. Transport
 
-This app follows the rules of this section in `:blocks:networkclient`
-([ADR-7](../adr/ADR-7-network-client-block.md)).
+This app follows the rules of this section in `:blocks:rpc`
+([ADR-7](../adr/ADR-7-rpc-block.md)).
 
 ### 2.1 Endpoint
 

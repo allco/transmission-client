@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.networkclient
+package eu.alsk.transmissionremote.rpc
 
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -35,7 +35,7 @@ import kotlinx.serialization.json.putJsonArray
  * The client does not know the RPC methods. The caller gives the method name and the params in
  * the format that [format] returns. Call [close] when the client is no longer necessary.
  */
-public class NetworkClient internal constructor(
+public class RpcClient internal constructor(
     public val endpoint: ServerEndpoint,
     engine: HttpClientEngine?,
 ) : AutoCloseable {
@@ -79,7 +79,7 @@ public class NetworkClient internal constructor(
      * Sends the RPC [method] with [params] and returns the `result` (JSON-RPC 2.0) or the
      * `arguments` (legacy) of the response. Use the method name and the param names of [format].
      *
-     * @throws NetworkClientException when the request fails or the server sends an RPC error.
+     * @throws RpcException when the request fails or the server sends an RPC error.
      */
     public suspend fun call(method: String, params: JsonObject = JsonObject(emptyMap())): JsonObject {
         val format = format()
@@ -110,18 +110,18 @@ public class NetworkClient internal constructor(
             http.post(endpoint.url) { setBody(TextContent(body, ContentType.Application.Json)) }
         } catch (e: CancellationException) {
             throw e
-        } catch (e: NetworkClientException) {
+        } catch (e: RpcException) {
             throw e
         } catch (e: Exception) {
-            throw NetworkClientException.Network(e)
+            throw RpcException.Network(e)
         }
         val text = response.bodyAsText()
         when (response.status) {
             HttpStatusCode.OK -> return text
-            HttpStatusCode.Unauthorized -> throw NetworkClientException.Unauthorized()
-            HttpStatusCode.Forbidden -> throw NetworkClientException.Forbidden()
-            HttpStatusCode.Conflict -> throw NetworkClientException.SessionRejected()
-            else -> throw NetworkClientException.Http(response.status.value, text.take(ERROR_BODY_LENGTH))
+            HttpStatusCode.Unauthorized -> throw RpcException.Unauthorized()
+            HttpStatusCode.Forbidden -> throw RpcException.Forbidden()
+            HttpStatusCode.Conflict -> throw RpcException.SessionRejected()
+            else -> throw RpcException.Http(response.status.value, text.take(ERROR_BODY_LENGTH))
         }
     }
 

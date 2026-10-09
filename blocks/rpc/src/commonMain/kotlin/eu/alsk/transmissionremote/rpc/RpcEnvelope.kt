@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.networkclient
+package eu.alsk.transmissionremote.rpc
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -34,14 +34,14 @@ internal object RpcEnvelope {
     }
 
     /**
-     * Returns the result of a response, or throws [NetworkClientException.Rpc] when the server sent
+     * Returns the result of a response, or throws [RpcException.ServerError] when the server sent
      * an RPC error.
      */
     fun decode(format: RpcFormat, text: String): JsonObject {
         val root = try {
             Json.parseToJsonElement(text).jsonObject
         } catch (e: IllegalArgumentException) {
-            throw NetworkClientException.InvalidResponse("The response is not a JSON object", e)
+            throw RpcException.InvalidResponse("The response is not a JSON object", e)
         }
         return when (format) {
             RpcFormat.JsonRpc2 -> decodeJsonRpc2(root)
@@ -53,7 +53,7 @@ internal object RpcEnvelope {
         val error = root["error"]
         if (error != null && error != JsonNull) {
             val errorObject = error.jsonObject
-            throw NetworkClientException.Rpc(
+            throw RpcException.ServerError(
                 code = errorObject["code"]?.jsonPrimitive?.intOrNull,
                 message = errorObject["message"]?.jsonPrimitive?.contentOrNull ?: "RPC error",
                 details = errorObject["data"]?.let(::errorString),
@@ -64,9 +64,9 @@ internal object RpcEnvelope {
 
     private fun decodeLegacy(root: JsonObject): JsonObject {
         val result = root["result"]?.jsonPrimitive?.contentOrNull
-            ?: throw NetworkClientException.InvalidResponse("The response has no \"result\"")
+            ?: throw RpcException.InvalidResponse("The response has no \"result\"")
         // The legacy format puts an error message in "result". "success" means no error.
-        if (result != "success") throw NetworkClientException.Rpc(code = null, message = result)
+        if (result != "success") throw RpcException.ServerError(code = null, message = result)
         return root["arguments"].asObjectOrEmpty()
     }
 

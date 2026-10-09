@@ -26,7 +26,7 @@ the groups.
 
 | # | Decision |
 |---|---|
-| [ADR-7](adr/ADR-7-network-client-block.md) | The `networkclient` block sends the RPC requests: Ktor, the session id plugin and the wire format |
+| [ADR-7](adr/ADR-7-rpc-block.md) | The `rpc` block sends the RPC requests: Ktor, the session id plugin and the wire format |
 
 ### Build
 

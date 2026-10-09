@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.networkclient
+package eu.alsk.transmissionremote.rpc
 
 /**
  * Selects the wire format of the RPC requests. See section 1 of

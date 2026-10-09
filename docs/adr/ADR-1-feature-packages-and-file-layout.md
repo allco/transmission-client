@@ -132,20 +132,20 @@ or a shared part. The Gradle path of a block is `:blocks:<name>`.
 ```
 blocks/
 ├── designsystem/        :blocks:designsystem (ADR-6)
-└── networkclient/       :blocks:networkclient (ADR-7)
+└── rpc/                 :blocks:rpc (ADR-7)
 shared/                  the features as packages; connects the blocks; builds the iOS framework
 androidApp/ desktopApp/ webApp/ iosApp/
 ```
 
 - Today `blocks/` holds two blocks: `designsystem` ([ADR-6](ADR-6-design-system-module.md)) and
-  `networkclient` ([ADR-7](ADR-7-network-client-block.md)).
+  `rpc` ([ADR-7](ADR-7-rpc-block.md)).
 - We plan to move each feature and each shared part from `shared` to a block of its own, for
   example `:blocks:connection` or `:blocks:data`. Until then, the features are packages in
   `shared` (sections 1 to 3).
 - A block keeps the package layout of sections 2 and 3. Its root package is the package of the
   feature or the role, for example `eu.alsk.transmissionremote.connection`.
 - Give a block the name of its feature or its role, in lower case and with no separators, for
-  example `designsystem` or `networkclient`. The folder, the last part of the Gradle path and the
+  example `designsystem` or `rpc`. The folder, the last part of the Gradle path and the
   last part of the root package have the same name.
 - The entry-point modules (`androidApp`, `desktopApp`, `webApp`) and `iosApp` stay at the root.
   `shared` stays at the root, too.

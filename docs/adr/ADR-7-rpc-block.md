@@ -1,4 +1,4 @@
-# ADR-7: The `networkclient` block sends the RPC requests
+# ADR-7: The `rpc` block sends the RPC requests
 
 - **Status:** Accepted
 - **Date:** 2026-10-09
@@ -20,15 +20,17 @@ These rules apply to all requests. Thus they belong in the network layer, not in
 
 ### 1. The block
 
-The block `blocks/networkclient` (`:blocks:networkclient`) holds the client. Its package is
-`eu.alsk.transmissionremote.networkclient`. It has no dependency on `shared` or on another block.
+The block `blocks/rpc` (`:blocks:rpc`) holds the client. Its package is
+`eu.alsk.transmissionremote.rpc`. It has no dependency on `shared` or on another block.
 
 | Declaration | Content |
 |---|---|
-| `NetworkClient` | Sends RPC requests to one server: `format()`, `call(method, params)`, `close()` |
+| `RpcClient` | Sends RPC requests to one server: `format()`, `call(method, params)`, `close()` |
 | `ServerEndpoint`, `Credentials` | The RPC URL and the user name and password of one server |
 | `RpcFormat` | `JsonRpc2` or `Legacy` |
-| `NetworkClientException` | The failures: `Unauthorized`, `Forbidden`, `SessionRejected`, `Http`, `Rpc`, `InvalidResponse`, `Network` |
+| `RpcException` | The failures: `Unauthorized`, `Forbidden`, `SessionRejected`, `Http`, `ServerError`, `InvalidResponse`, `Network` |
+| `torrents.TorrentsClient` | Gets the torrent list: `getTorrents()`, `getRecentlyActive()` |
+| `torrents.Torrent`, `TorrentStatus`, `TorrentError`, `TorrentChanges` | The torrent data, with no dependency on the wire format |
 | `sessionPlugin` (internal) | The Ktor plugin for the session id |
 | `RpcEnvelope` (internal) | Builds and reads the request and response bodies of both formats |
 
@@ -46,7 +48,7 @@ The diagram shows how the plugin handles HTTP 409.
 
 ```mermaid
 sequenceDiagram
-    participant Client as NetworkClient
+    participant Client as RpcClient
     participant Plugin as sessionPlugin
     participant Server
     Client->>Plugin: request
@@ -59,25 +61,45 @@ sequenceDiagram
 ```
 
 - The plugin sends a request again one time only. A second HTTP 409 goes to the caller as
-  `NetworkClientException.SessionRejected`. Thus the plugin cannot loop.
+  `RpcException.SessionRejected`. Thus the plugin cannot loop.
 - The plugin also stores the `X-Transmission-Rpc-Version` header of the HTTP 409. The client uses
   it to select the wire format.
 
 ### 4. The wire format
 
-- `NetworkClient.format()` finds the format on the first call and stores it. The first request is
+- `RpcClient.format()` finds the format on the first call and stores it. The first request is
   a legacy `session-get`, because all server versions accept the legacy format.
 - When the HTTP 409 of that request has `X-Transmission-Rpc-Version`, the format is `JsonRpc2`.
   Otherwise, it is `Legacy`.
 - A server with no session id check sends no HTTP 409. Then the client reads
   `rpc-version-semver` from the reply. Version 6 or later means `JsonRpc2`.
 
-### 5. The client does not know the RPC methods yet
+### 5. Method clients
 
-- `call(method, params)` takes the method name and the params in the format that `format()`
-  returns. It returns the `result` (JSON-RPC 2.0) or the `arguments` (legacy).
-- The typed RPC methods, for example `torrent_get`, and the name mapping between the two formats
-  are a later step. Record that decision in this ADR when we make it.
+- `RpcClient.call(method, params)` takes the method name and the params in the format that
+  `format()` returns. It returns the `result` (JSON-RPC 2.0) or the `arguments` (legacy).
+- A **method client** gives typed access to one group of RPC methods. It uses `RpcClient`. It
+  hides the wire format from the caller. Each group has its own package in the block, for example
+  `rpc.torrents` with `TorrentsClient`. Later groups follow the same pattern, for example
+  `rpc.session`.
+- A method client keeps the names of each field in both formats in one internal table, for example
+  `TorrentField`: `hash_string` and `hashString`.
+- A method client requests only the fields that its model holds. Section 7.2 of the RPC reference
+  explains why.
+- The models do not depend on the wire format. The method client converts the special values:
+  - An `eta` of -1 or -2 becomes null.
+  - An `upload_ratio` of -1 becomes null, and -2 becomes `Double.POSITIVE_INFINITY`.
+  - A `status` or an `error` code that the client does not know becomes `Stopped` or
+    `LocalError`. Thus a newer server does not break the list.
+- A feature uses a method client when one exists. It does not call `RpcClient.call` for that
+  method.
+
+`TorrentsClient` has two functions:
+
+| Function | Request | Use |
+|---|---|---|
+| `getTorrents()` | `torrent_get` with the fields of `Torrent`, no `ids` | The first load of the torrent list |
+| `getRecentlyActive()` | `torrent_get` with `ids: "recently_active"` | The updates after the first load. It also returns the ids in `removed`. |
 
 ### 6. Errors
 
@@ -87,7 +109,7 @@ sequenceDiagram
 | HTTP 403 | `Forbidden` |
 | HTTP 409 after the retry | `SessionRejected` |
 | Other HTTP status | `Http(status, body)` |
-| An RPC error in the reply | `Rpc(code, message, details)`. `code` is null for the legacy format. |
+| An RPC error in the reply | `ServerError(code, message, details)`. `code` is null for the legacy format. |
 | A reply that is not an RPC response | `InvalidResponse` |
 | No connection, timeout | `Network(cause)` |
 
@@ -100,15 +122,19 @@ The tests in `commonTest` use the Ktor `MockEngine`. The mock server sends HTTP 
 has no valid session id, as Transmission does. Run the tests with:
 
 ```shell
-./gradlew :blocks:networkclient:jvmTest
+./gradlew :blocks:rpc:jvmTest
 ```
+
+`RpcClientTest` tests the transport. `TorrentsClientTest` tests `TorrentsClient` with a server of
+each wire format.
 
 ## Consequences
 
 - The features do not handle HTTP status codes, session ids or wire formats. They call
-  `NetworkClient`.
+  `RpcClient`.
 - The first request to a server costs one more round trip, for the HTTP 409. This is the same
   cost for each Transmission client.
 - The web build sees the session id only when the server or a proxy sends
   `Access-Control-Expose-Headers` (RPC reference, section 7.4).
-- Until the typed methods exist, a caller must know the method names of both formats.
+- Each new method group needs a method client, a field table and a model. The tests must cover
+  both wire formats.

@@ -27,7 +27,7 @@ kotlin {
     }
 
     android {
-        namespace = "eu.alsk.transmissionremote.networkclient"
+        namespace = "eu.alsk.transmissionremote.rpc"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 

@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.networkclient
+package eu.alsk.transmissionremote.rpc
 
 /** Holds the user name and the password for the HTTP Basic authentication of the server. */
 public data class Credentials(

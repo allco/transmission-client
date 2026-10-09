@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.networkclient
+package eu.alsk.transmissionremote.rpc
 
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockRequestHandleScope
@@ -23,7 +23,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class NetworkClientTest {
+class RpcClientTest {
 
     private val endpoint = ServerEndpoint(url = "http://server:9091/transmission/rpc")
 
@@ -67,7 +67,7 @@ class NetworkClientTest {
     @Test
     fun retriesOnceAfter409AndKeepsTheSessionId() = runTest {
         val received = mutableListOf<Received>()
-        val client = NetworkClient(endpoint, server(received = received) { reply(it) })
+        val client = RpcClient(endpoint, server(received = received) { reply(it) })
 
         client.call("session_get")
 
@@ -89,16 +89,16 @@ class NetworkClientTest {
             counter++
             respond("", HttpStatusCode.Conflict, headersOf(SESSION_ID_HEADER, "session-$counter"))
         }
-        val client = NetworkClient(endpoint, engine)
+        val client = RpcClient(endpoint, engine)
 
-        assertFailsWith<NetworkClientException.SessionRejected> { client.call("session_get") }
+        assertFailsWith<RpcException.SessionRejected> { client.call("session_get") }
         assertEquals(2, received.size)
     }
 
     @Test
     fun selectsJsonRpc2WhenThe409HasTheRpcVersionHeader() = runTest {
         val received = mutableListOf<Received>()
-        val client = NetworkClient(endpoint, server(rpcVersion = "6.0.1", received = received) { reply(it) })
+        val client = RpcClient(endpoint, server(rpcVersion = "6.0.1", received = received) { reply(it) })
 
         assertEquals(RpcFormat.JsonRpc2, client.format())
     }
@@ -106,7 +106,7 @@ class NetworkClientTest {
     @Test
     fun selectsLegacyWhenThe409HasNoRpcVersionHeader() = runTest {
         val received = mutableListOf<Received>()
-        val client = NetworkClient(endpoint, server(rpcVersion = null, received = received) { reply(it) })
+        val client = RpcClient(endpoint, server(rpcVersion = null, received = received) { reply(it) })
 
         assertEquals(RpcFormat.Legacy, client.format())
     }
@@ -114,7 +114,7 @@ class NetworkClientTest {
     @Test
     fun detectsTheFormatOnlyOnce() = runTest {
         val received = mutableListOf<Received>()
-        val client = NetworkClient(endpoint, server(received = received) { reply(it) })
+        val client = RpcClient(endpoint, server(received = received) { reply(it) })
 
         client.format()
         client.format()
@@ -125,7 +125,7 @@ class NetworkClientTest {
     @Test
     fun buildsAJsonRpc2Request() = runTest {
         val received = mutableListOf<Received>()
-        val client = NetworkClient(endpoint, server(received = received) { reply(it) })
+        val client = RpcClient(endpoint, server(received = received) { reply(it) })
         val params = buildJsonObject { put("ids", 7) }
 
         val result = client.call("torrent_stop", params)
@@ -141,7 +141,7 @@ class NetworkClientTest {
     @Test
     fun buildsALegacyRequest() = runTest {
         val received = mutableListOf<Received>()
-        val client = NetworkClient(endpoint, server(rpcVersion = null, received = received) { reply(it) })
+        val client = RpcClient(endpoint, server(rpcVersion = null, received = received) { reply(it) })
         val params = buildJsonObject { put("ids", 7) }
 
         val result = client.call("torrent-stop", params)
@@ -157,7 +157,7 @@ class NetworkClientTest {
     fun sendsTheCredentialsWithBasicAuthentication() = runTest {
         val received = mutableListOf<Received>()
         val withCredentials = endpoint.copy(credentials = Credentials("admin", "secret"))
-        val client = NetworkClient(withCredentials, server(received = received) { reply(it) })
+        val client = RpcClient(withCredentials, server(received = received) { reply(it) })
 
         client.call("session_get")
 
@@ -168,23 +168,23 @@ class NetworkClientTest {
     @Test
     fun throwsUnauthorizedOn401() = runTest {
         val engine = MockEngine { respond("", HttpStatusCode.Unauthorized) }
-        val client = NetworkClient(endpoint, engine)
+        val client = RpcClient(endpoint, engine)
 
-        assertFailsWith<NetworkClientException.Unauthorized> { client.call("session_get") }
+        assertFailsWith<RpcException.Unauthorized> { client.call("session_get") }
     }
 
     @Test
     fun throwsForbiddenOn403() = runTest {
         val engine = MockEngine { respond("", HttpStatusCode.Forbidden) }
-        val client = NetworkClient(endpoint, engine)
+        val client = RpcClient(endpoint, engine)
 
-        assertFailsWith<NetworkClientException.Forbidden> { client.call("session_get") }
+        assertFailsWith<RpcException.Forbidden> { client.call("session_get") }
     }
 
     @Test
     fun throwsTheJsonRpc2ErrorOfTheServer() = runTest {
         val received = mutableListOf<Received>()
-        val client = NetworkClient(endpoint, server(received = received) { item ->
+        val client = RpcClient(endpoint, server(received = received) { item ->
             if (item.body["method"]?.jsonPrimitive?.content == "port_test") {
                 json(
                     """{"jsonrpc":"2.0","error":{"code":7,"message":"HTTP error from backend service",""" +
@@ -195,7 +195,7 @@ class NetworkClientTest {
             }
         })
 
-        val error = assertFailsWith<NetworkClientException.Rpc> { client.call("port_test") }
+        val error = assertFailsWith<RpcException.ServerError> { client.call("port_test") }
         assertEquals(7, error.code)
         assertEquals("HTTP error from backend service", error.message)
         assertEquals("Couldn't test port", error.details)
@@ -204,7 +204,7 @@ class NetworkClientTest {
     @Test
     fun throwsTheLegacyErrorOfTheServer() = runTest {
         val received = mutableListOf<Received>()
-        val client = NetworkClient(endpoint, server(rpcVersion = null, received = received) { item ->
+        val client = RpcClient(endpoint, server(rpcVersion = null, received = received) { item ->
             if (item.body["method"]?.jsonPrimitive?.content == "torrent-add") {
                 json("""{"result":"invalid or corrupt torrent file","tag":1}""")
             } else {
@@ -212,7 +212,7 @@ class NetworkClientTest {
             }
         })
 
-        val error = assertFailsWith<NetworkClientException.Rpc> { client.call("torrent-add") }
+        val error = assertFailsWith<RpcException.ServerError> { client.call("torrent-add") }
         assertNull(error.code)
         assertEquals("invalid or corrupt torrent file", error.message)
     }

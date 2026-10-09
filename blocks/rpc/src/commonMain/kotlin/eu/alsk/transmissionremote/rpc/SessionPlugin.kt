@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.networkclient
+package eu.alsk.transmissionremote.rpc
 
 import io.ktor.client.plugins.api.Send
 import io.ktor.client.plugins.api.createClientPlugin

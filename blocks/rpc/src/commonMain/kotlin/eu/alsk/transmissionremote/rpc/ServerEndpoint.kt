@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.networkclient
+package eu.alsk.transmissionremote.rpc
 
 /**
  * Holds the address of the RPC endpoint of one Transmission server, for example

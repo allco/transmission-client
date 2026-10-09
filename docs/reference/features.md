@@ -179,7 +179,8 @@ TorrentList is the main screen. The screen shows the torrents of the active serv
 
 - **Status:** Planned.
 - **Data:** The update cycle in RPC section 7.2. The first load gets all torrents. Then the app
-  polls with `recently_active`.
+  polls with `recently_active`. `TorrentsClient` in `:blocks:rpc` has both requests:
+  `getTorrents()` and `getRecentlyActive()`. The screen does not exist yet.
 - **Content:**
   - One row for each torrent: name, status, progress, speeds, ETA, ratio and error.
   - A summary bar: total download speed, total upload speed and free space. The data comes from
@@ -389,11 +390,11 @@ packages that have the name of their role.
 
 | Part | Package | Status | Used by |
 |---|---|---|---|
-| RPC client: transport, session id, wire format, errors | `:blocks:networkclient` | Partial: the transport works. The typed RPC methods do not exist yet. | All features that talk to the server |
-| Demo RPC client: the stub for DemoServer, with sample data | `:blocks:networkclient` or *`demo/`* | Planned | DemoServer and all features that talk to the server |
+| RPC client: transport, session id, wire format, errors | `:blocks:rpc` | Partial: the transport and `TorrentsClient` (`torrent_get`) work. The other methods do not exist yet. | All features that talk to the server |
+| Demo RPC client: the stub for DemoServer, with sample data | `:blocks:rpc` or *`demo/`* | Planned | DemoServer and all features that talk to the server |
 | Server configuration storage | `connection/data/`. It moves to a role package when ServerList or Splash needs it. | Partial (in memory only) | ServerEditor, ServerList, Splash |
 | Formatters: size, speed, ETA, ratio, dates | *`format/`* | Planned | TorrentList, TorrentDetails, ServerStats |
-| Connection state: online, offline, auth failure | `:blocks:networkclient` or a role package | Planned | TorrentList, all session features |
+| Connection state: online, offline, auth failure | `:blocks:rpc` or a role package | Planned | TorrentList, all session features |
 | Design system: theme, icons, components | `:blocks:designsystem` module | Done | All features |
 
 ## 8. Open questions
@@ -405,6 +406,6 @@ packages that have the name of their role.
 - Is TurtleMode a separate feature package, or a part of TorrentList?
 - Is ServerInfo a separate screen, a section of ServerSettings, or a part of About?
 - TorrentDetails: does the app use an Options tab, or the menu and the sheets in the Figma design?
-- DemoServer: does the stub live in `:blocks:networkclient` or in its own `demo/` package?
+- DemoServer: does the stub live in `:blocks:rpc` or in its own `demo/` package?
 - Does the app need a navigation library when it has more than three screens? Today, `App.kt`
   uses an enum and a `Crossfade`.
