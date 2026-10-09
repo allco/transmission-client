@@ -104,43 +104,35 @@ private fun ConnectionContent(
                 )
 
                 FormField(
-                    state = FormFieldState(
-                        label = "Name (optional)",
-                        value = state.name,
-                        placeholder = "Home server",
-                    ),
+                    label = "Name (optional)",
+                    value = state.name,
                     onValueChange = onNameChange,
+                    placeholder = "Home server",
                 )
                 FormField(
-                    state = FormFieldState(
-                        label = "Host",
-                        value = state.host,
-                        placeholder = "192.168.1.10 or nas.local",
-                        error = state.hostError,
-                        keyboardType = KeyboardType.Uri,
-                    ),
+                    label = "Host",
+                    value = state.host,
                     onValueChange = onHostChange,
+                    placeholder = "192.168.1.10 or nas.local",
+                    error = state.hostError,
+                    keyboardType = KeyboardType.Uri,
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     FormField(
-                        state = FormFieldState(
-                            label = "Port",
-                            value = state.port,
-                            error = state.portError,
-                            keyboardType = KeyboardType.Number,
-                        ),
+                        label = "Port",
+                        value = state.port,
                         onValueChange = onPortChange,
                         modifier = Modifier.weight(1f),
+                        error = state.portError,
+                        keyboardType = KeyboardType.Number,
                     )
                     FormField(
-                        state = FormFieldState(
-                            label = "RPC path",
-                            value = state.rpcPath,
-                            error = state.rpcPathError,
-                            keyboardType = KeyboardType.Uri,
-                        ),
+                        label = "RPC path",
+                        value = state.rpcPath,
                         onValueChange = onRpcPathChange,
                         modifier = Modifier.weight(2f),
+                        error = state.rpcPathError,
+                        keyboardType = KeyboardType.Uri,
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -150,10 +142,7 @@ private fun ConnectionContent(
 
                 HorizontalDivider()
                 Text("Authentication", style = MaterialTheme.typography.titleSmall)
-                FormField(
-                    state = FormFieldState(label = "Username (optional)", value = state.username),
-                    onValueChange = onUsernameChange,
-                )
+                FormField(label = "Username (optional)", value = state.username, onValueChange = onUsernameChange)
                 PasswordField(state.password, onPasswordChange, onDone = onSave)
 
                 if (state.rpcUrl != null) {

@@ -16,59 +16,54 @@ import androidx.compose.ui.unit.dp
 import eu.alsk.transmissionremote.theme.AppTheme
 
 /**
- * Holds the data that a [FormField] shows.
+ * Shows one single-line text field of a form.
  * If [error] is not null, the field shows [error] below itself and marks itself as invalid.
+ * [label], [placeholder] and [keyboardType] are config: the call site sets them, and they do not
+ * change.
  */
-internal data class FormFieldState(
-    val label: String,
-    val value: String,
-    val placeholder: String? = null,
-    val error: String? = null,
-    val keyboardType: KeyboardType = KeyboardType.Text,
-)
-
 @Composable
 internal fun FormField(
-    state: FormFieldState,
+    label: String,
+    value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    placeholder: String? = null,
+    error: String? = null,
+    keyboardType: KeyboardType = KeyboardType.Text,
 ) {
     OutlinedTextField(
-        value = state.value,
+        value = value,
         onValueChange = onValueChange,
-        label = { Text(state.label) },
-        placeholder = state.placeholder?.let { { Text(it) } },
-        isError = state.error != null,
-        supportingText = state.error?.let { { Text(it) } },
+        label = { Text(label) },
+        placeholder = placeholder?.let { { Text(it) } },
+        isError = error != null,
+        supportingText = error?.let { { Text(it) } },
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = state.keyboardType, imeAction = ImeAction.Next),
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Next),
         modifier = modifier.fillMaxWidth(),
     )
 }
 
-private val dummyFormFieldState = FormFieldState(label = "Host", value = "192.168.1.10")
+private val dummyHost = "192.168.1.10"
 
-private val dummyFormFieldStateWithPlaceholder = FormFieldState(
-    label = "Host",
-    value = "",
-    placeholder = "192.168.1.10 or nas.local",
-)
+private val dummyPort = "99999"
 
-private val dummyFormFieldStateWithError = FormFieldState(
-    label = "Port",
-    value = "99999",
-    error = "Port must be between 1 and 65535",
-    keyboardType = KeyboardType.Number,
-)
+private val dummyPortError = "Port must be between 1 and 65535"
 
 @Preview(showBackground = true)
 @Composable
 private fun FormFieldPreview() {
     AppTheme {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            FormField(dummyFormFieldState, {})
-            FormField(dummyFormFieldStateWithPlaceholder, {})
-            FormField(dummyFormFieldStateWithError, {})
+            FormField(label = "Host", value = dummyHost, onValueChange = {})
+            FormField(label = "Host", value = "", onValueChange = {}, placeholder = "192.168.1.10 or nas.local")
+            FormField(
+                label = "Port",
+                value = dummyPort,
+                onValueChange = {},
+                error = dummyPortError,
+                keyboardType = KeyboardType.Number,
+            )
         }
     }
 }
