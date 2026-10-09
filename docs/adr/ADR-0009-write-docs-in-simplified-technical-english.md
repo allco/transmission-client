@@ -1,6 +1,6 @@
 # ADR-0009: Write docs and comments in Simplified Technical English
 
-- **Status:** Accepted
+- **Status:** Accepted (amended 2026-10-09)
 - **Date:** 2026-10-08
 
 ## Context
@@ -44,6 +44,11 @@ possible structure. The `asd-ste100` skill applies the STE rules to general Engl
   Fix each finding. Do not fix a finding when the rewrite changes the meaning, for example a
   quoted protocol term or an identifier. The linter counts words per line. Thus it does not find
   a long sentence that continues on the next line. Check the sentence length yourself.
+- Use a Mermaid diagram when the subject has a shape: a flow, a sequence, a set of states or a
+  structure. A reader understands a diagram faster than the same facts in text. Do not add images
+  of diagrams. Apply the STE rules to the labels of the diagram.
+- [`docs/reference/documentation.md`](../reference/documentation.md) gives the procedure, the
+  words of this project and the rules for diagrams.
 - Do not rewrite these items:
   - Code, identifiers, commands and quoted protocol names.
   - Text that a quote marks as the words of another source.

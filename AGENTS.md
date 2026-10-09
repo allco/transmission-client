@@ -113,7 +113,12 @@ This list gives a short summary of each ADR:
   commit messages in Simplified Technical English. Use the Strict mode for `AGENTS.md`, code
   comments and KDoc, and the STE-flavored mode for `README.md`, ADRs and `docs/reference/`. Before
   you commit, run `python3 -I .claude/skills/asd-ste100/scripts/ste-lint.py <file.md>` on each
-  changed Markdown file.
+  changed Markdown file. Use a Mermaid diagram when the subject is a flow, a sequence, a set of
+  states or a structure. `docs/reference/documentation.md` gives the procedure and the words of
+  this project.
+
+`docs/reference/features.md` lists the features of the app, with the status and the package of
+each feature. Update this file when you add a feature or change the status of a feature.
 
 `docs/proposals/` holds ideas that the team has not decided yet. Do not implement an open proposal.
 When the team accepts a proposal, record the decision in an ADR.

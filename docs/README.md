@@ -18,7 +18,7 @@ record never changes.
 | [ADR-0006](adr/ADR-0006-features-at-the-package-root.md) | Features are top-level packages, with the ViewModel at the root and Composables in `views/` | Accepted (amended) |
 | [ADR-0007](adr/ADR-0007-gradle-daemon-on-corretto-from-direct-links.md) | The Gradle daemon runs on Amazon Corretto, downloaded from direct CDN links | Accepted |
 | [ADR-0008](adr/ADR-0008-composables-take-only-what-they-use.md) | Composables take exactly the data they use (interface segregation) | Accepted |
-| [ADR-0009](adr/ADR-0009-write-docs-in-simplified-technical-english.md) | Write docs and comments in Simplified Technical English | Accepted |
+| [ADR-0009](adr/ADR-0009-write-docs-in-simplified-technical-english.md) | Write docs and comments in Simplified Technical English, with Mermaid diagrams | Accepted (amended) |
 
 To add a decision, do these steps:
 
@@ -60,6 +60,10 @@ When the team rejects a proposal, set its status to "Rejected" and give the reas
 
 The [`reference/`](reference/) folder holds external material that the code relies on.
 
+- [Features](reference/features.md): the features of this app, with the status, the package and
+  the RPC methods of each feature. The list includes planned features.
+- [Documentation](reference/documentation.md): how to write the docs, the comments and the commit
+  messages. It gives the STE modes, the words of this project and the rules for Mermaid diagrams.
 - [Transmission RPC API](reference/transmission-rpc-api.md): the two wire formats (JSON-RPC 2.0 for
   4.1+, legacy for ≤ 4.0) and the session-id handshake. It also gives all methods and fields, and
   notes for this client.
