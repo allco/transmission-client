@@ -98,7 +98,8 @@ flowchart LR
 
 The splash screen shows the app logo, and then opens the next screen.
 
-- **Status:** Done. The code is in `splash/views/SplashScreen.kt` and `splash/views/AppLogo.kt`.
+- **Status:** Done. The code is in `splash/views/SplashScreen.kt`. The logo is the `Logo`
+  component of the `:designsystem` module.
 - **Next screen:** Today, the splash screen always opens ServerEditor. After the app keeps server
   configurations, the splash screen must open one of these screens:
   - Welcome, when no server configuration exists.
@@ -393,7 +394,7 @@ have the name of their role.
 | Server configuration storage | `data/` | Partial (in memory only) | ServerEditor, ServerList, Splash |
 | Formatters: size, speed, ETA, ratio, dates | *`format/`* | Planned | TorrentList, TorrentDetails, ServerStats |
 | Connection state: online, offline, auth failure | *`rpc/`* or `data/` | Planned | TorrentList, all session features |
-| Theme | `theme/` | Done | All features |
+| Design system: theme, icons, components | `:designsystem` module | Done | All features |
 
 ## 8. Open questions
 

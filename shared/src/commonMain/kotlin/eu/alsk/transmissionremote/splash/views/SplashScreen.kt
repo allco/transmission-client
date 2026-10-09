@@ -1,14 +1,11 @@
 package eu.alsk.transmissionremote.splash.views
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,8 +14,10 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import eu.alsk.transmissionremote.theme.AppTheme
+import eu.alsk.transmissionremote.designsystem.component.CircularProgress
+import eu.alsk.transmissionremote.designsystem.component.Logo
+import eu.alsk.transmissionremote.designsystem.theme.AppTheme
+import eu.alsk.transmissionremote.designsystem.theme.Spacing
 import kotlinx.coroutines.delay
 
 private const val SPLASH_DURATION_MS = 1500L
@@ -31,21 +30,22 @@ internal fun SplashScreen(onFinished: () -> Unit) {
         currentOnFinished()
     }
 
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            AppLogo(
-                background = MaterialTheme.colorScheme.primary,
-                foreground = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(96.dp),
-            )
-            Spacer(Modifier.height(24.dp))
-            Text("Transmission Remote", style = MaterialTheme.typography.headlineSmall)
-            Spacer(Modifier.height(32.dp))
-            CircularProgressIndicator(modifier = Modifier.size(32.dp), strokeWidth = 3.dp)
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppTheme.colors.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Logo()
+        Spacer(Modifier.height(Spacing.s24))
+        Text(
+            "Transmission Remote",
+            style = AppTheme.typography.headlineSmall,
+            color = AppTheme.colors.onSurface,
+        )
+        Spacer(Modifier.height(Spacing.s32))
+        CircularProgress()
     }
 }
 

@@ -33,7 +33,7 @@ flowchart LR
     VM[XxxViewModel] -->|StateFlow of XxxContentState| Screen[XxxScreen]
     VM -->|Flow of XxxEvent| Screen
     Screen -->|state + callbacks| Content[XxxContent]
-    Content -->|config + state values + callback| Child[FormField]
+    Content -->|config + state values + callback| Child[TextField]
     Content -->|user action| Screen
     Screen -->|function call| VM
 ```
@@ -41,7 +41,7 @@ flowchart LR
 ### 1. One file for each non-trivial Composable
 
 - Each non-trivial Composable has its own file. The file has the name of the Composable
-  (`FormField` → `FormField.kt`).
+  (`TextField` → `TextField.kt`).
 - A Composable is trivial if it is a few lines of layout with no state and no logic. An example is
   a styled `Text` wrapper. A trivial Composable can stay in the file of the one Composable that
   uses it. If you are not sure, give the Composable its own file.
@@ -76,8 +76,8 @@ A screen has two Composables. Both Composables are in `XxxScreen.kt`:
   - It is `private`, because only `XxxScreen` calls it.
   - Its previews show the important states, in light and in dark.
 
-Example: `connection/views/` holds `ConnectionScreen.kt` (`ConnectionScreen` and
-`ConnectionContent`), `FormField.kt` and `PasswordField.kt`.
+Example: `connection/views/ConnectionScreen.kt` holds `ConnectionScreen` and
+`ConnectionContent`.
 
 ### 4. A Composable takes only the data that it shows
 
@@ -129,32 +129,34 @@ A Composable has these kinds of parameters:
 - Order the parameters as Compose does: the required parameters, then `modifier`, then the
   optional parameters.
 
-Example, in `connection/views/FormField.kt`. `FormField` has two state values (`value` and
-`error`). Thus it has no state class:
+Example, in `designsystem/…/component/TextField.kt`. `TextField` has two state values (`value`
+and `error`). Thus it has no state class:
 
 ```kotlin
 @Composable
-internal fun FormField(
-    label: String,                                  // config
-    value: String,                                  // state
-    onValueChange: (String) -> Unit,                // callback
+public fun TextField(
+    label: String,                                                  // config
+    value: String,                                                  // state
+    onValueChange: (String) -> Unit,                                // callback
     modifier: Modifier = Modifier,
-    placeholder: String? = null,                    // config
-    error: String? = null,                          // state
-    keyboardType: KeyboardType = KeyboardType.Text, // config
+    placeholder: String? = null,                                    // config
+    error: String? = null,                                          // state
+    supportingText: String? = null,                                 // config
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,     // config
+    // … more config parameters
 )
 ```
 
 The call site in `ConnectionContent` makes no object:
 
 ```kotlin
-FormField(
+TextField(
     label = "Host",
     value = state.host,
     onValueChange = onHostChange,
     placeholder = "192.168.1.10 or nas.local",
     error = state.hostError,
-    keyboardType = KeyboardType.Uri,
+    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
 )
 ```
 

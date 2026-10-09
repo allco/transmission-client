@@ -31,23 +31,23 @@ eu/alsk/transmissionremote/
 │   ├── ConnectionViewModel.kt      ViewModel
 │   ├── ConnectionContentState.kt   the UI state that the ViewModel exposes
 │   ├── ConnectionEvent.kt          the one-time events that the ViewModel sends
-│   └── views/                      one screen, so its parts are here directly (section 3)
-│       ├── ConnectionScreen.kt     ConnectionScreen (container) + ConnectionContent (renderer)
-│       ├── FormField.kt
-│       └── PasswordField.kt
+│   └── views/                      one screen and no parts, so no component folder (section 3)
+│       └── ConnectionScreen.kt     ConnectionScreen (container) + ConnectionContent (renderer)
 ├── splash/                         feature            → later feature:splash
 │   └── views/
-│       ├── SplashScreen.kt
-│       └── AppLogo.kt
-├── theme/                          shared UI          → later core:designsystem
-│   └── Theme.kt
+│       └── SplashScreen.kt
 └── data/                           shared data        → later core:data / core:network
 ```
 
+The shared UI is not in this tree. It is in the `:designsystem` module
+([ADR-6](ADR-6-design-system-module.md)).
+
 - There is no `ui/` package.
 - Code that more than one feature uses is not a feature. Put it in a package at the root that has
-  the name of its role: `theme/` for shared UI, `data/` for data and networking. Add a new role
-  package only when a second feature needs the code.
+  the name of its role, for example `data/` for data and networking. Add a new role package only
+  when a second feature needs the code.
+- Shared UI is in the `:designsystem` module, not in a role package
+  ([ADR-6](ADR-6-design-system-module.md)).
 - Give a feature a name that tells what the user does, for example `connection` or `torrents`. A
   feature name must not be the same as a role name.
 
@@ -58,8 +58,8 @@ flowchart TD
     App[App.kt] --> connection
     App --> splash
     connection --> data
-    connection --> theme
-    splash --> theme
+    connection --> designsystem[":designsystem module"]
+    splash --> designsystem
 ```
 
 `App.kt` connects the features.
@@ -106,14 +106,16 @@ A component is a ViewModel, a UI element, a use case or a repository.
   Composable in each file.
 
 Today each feature has one screen. Thus `views/` holds the screen and its parts directly (see the
-tree in section 1). This example shows `connection/views/` after we add a second screen:
+tree in section 1). `ConnectionScreen` has no parts today, because it uses the components of the
+`:designsystem` module. This example shows `connection/views/` after we add a second screen, and
+after `ConnectionScreen` gets two parts:
 
 ```
 connection/views/
 ├── connectionScreen/
 │   ├── ConnectionScreen.kt
-│   ├── FormField.kt
-│   └── PasswordField.kt
+│   ├── UrlPreview.kt                   example: a part that only ConnectionScreen uses
+│   └── TestResultBanner.kt             example: a part that only ConnectionScreen uses
 └── ServerListScreen.kt                 one file. It becomes serverListScreen/ when it has parts.
 ```
 

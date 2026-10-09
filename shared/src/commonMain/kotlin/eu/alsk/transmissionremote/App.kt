@@ -9,7 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import eu.alsk.transmissionremote.connection.views.ConnectionScreen
 import eu.alsk.transmissionremote.splash.views.SplashScreen
-import eu.alsk.transmissionremote.theme.AppTheme
+import eu.alsk.transmissionremote.designsystem.theme.AppTheme
 
 private enum class Screen { Splash, Connection }
 

@@ -139,7 +139,7 @@ Select the diagram type from the subject:
 | Navigation between screens | `flowchart` | Splash → Welcome or TorrentList |
 | A request and its replies | `sequenceDiagram` | The session id handshake (409, then retry) |
 | The states of an object | `stateDiagram-v2` | Torrent status: stopped, queued, checking, downloading, seeding |
-| Packages and their dependencies | `flowchart` or `classDiagram` | Feature packages that use `data/` and `theme/` |
+| Packages and their dependencies | `flowchart` or `classDiagram` | Feature packages that use `data/` and the `:designsystem` module |
 | Data and its fields | `classDiagram` or `erDiagram` | `ServerConnection`, the content state of a screen |
 | Work in time | `gantt` or `timeline` | A release plan |
 | Shares of a total | `pie` | Not often useful in docs |

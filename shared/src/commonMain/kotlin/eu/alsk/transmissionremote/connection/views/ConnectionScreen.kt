@@ -1,32 +1,30 @@
 package eu.alsk.transmissionremote.connection.views
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,7 +33,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import eu.alsk.transmissionremote.connection.ConnectionContentState
 import eu.alsk.transmissionremote.connection.ConnectionEvent
 import eu.alsk.transmissionremote.connection.ConnectionViewModel
-import eu.alsk.transmissionremote.theme.AppTheme
+import eu.alsk.transmissionremote.designsystem.component.Button
+import eu.alsk.transmissionremote.designsystem.component.ListItem
+import eu.alsk.transmissionremote.designsystem.component.ListItemTrailing
+import eu.alsk.transmissionremote.designsystem.component.PasswordField
+import eu.alsk.transmissionremote.designsystem.component.SectionHeader
+import eu.alsk.transmissionremote.designsystem.component.SnackbarHost
+import eu.alsk.transmissionremote.designsystem.component.TextField
+import eu.alsk.transmissionremote.designsystem.component.TopAppBar
+import eu.alsk.transmissionremote.designsystem.icon.AppIcons
+import eu.alsk.transmissionremote.designsystem.theme.AppTheme
+import eu.alsk.transmissionremote.designsystem.theme.Spacing
 
 @Composable
 internal fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { ConnectionViewModel() }) {
@@ -64,7 +72,6 @@ internal fun ConnectionScreen(viewModel: ConnectionViewModel = viewModel { Conne
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ConnectionContent(
     state: ConnectionContentState,
@@ -78,15 +85,17 @@ private fun ConnectionContent(
     onPasswordChange: (String) -> Unit,
     onSave: () -> Unit,
 ) {
+    val next = KeyboardOptions(imeAction = ImeAction.Next)
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Server connection") }) },
+        topBar = { TopAppBar(title = "Add server") },
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        bottomBar = { SaveBar(onSave = onSave) },
+        containerColor = AppTheme.colors.surface,
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .imePadding()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -94,70 +103,107 @@ private fun ConnectionContent(
                 modifier = Modifier
                     .widthIn(max = 560.dp)
                     .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                    .padding(Spacing.s16),
+                verticalArrangement = Arrangement.spacedBy(Spacing.s12),
             ) {
-                Text(
-                    "Enter the details of the Transmission daemon you want to control.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-
-                FormField(
+                TextField(
                     label = "Name (optional)",
                     value = state.name,
                     onValueChange = onNameChange,
                     placeholder = "Home server",
+                    keyboardOptions = next,
                 )
-                FormField(
+                TextField(
                     label = "Host",
                     value = state.host,
                     onValueChange = onHostChange,
                     placeholder = "192.168.1.10 or nas.local",
                     error = state.hostError,
-                    keyboardType = KeyboardType.Uri,
+                    keyboardOptions = next.copy(keyboardType = KeyboardType.Uri),
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    FormField(
+                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.s12)) {
+                    TextField(
                         label = "Port",
                         value = state.port,
                         onValueChange = onPortChange,
                         modifier = Modifier.weight(1f),
                         error = state.portError,
-                        keyboardType = KeyboardType.Number,
+                        keyboardOptions = next.copy(keyboardType = KeyboardType.Number),
                     )
-                    FormField(
+                    TextField(
                         label = "RPC path",
                         value = state.rpcPath,
                         onValueChange = onRpcPathChange,
                         modifier = Modifier.weight(2f),
                         error = state.rpcPathError,
-                        keyboardType = KeyboardType.Uri,
+                        keyboardOptions = next.copy(keyboardType = KeyboardType.Uri),
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Use HTTPS", modifier = Modifier.weight(1f))
-                    Switch(checked = state.useHttps, onCheckedChange = onUseHttpsChange)
-                }
-
-                HorizontalDivider()
-                Text("Authentication", style = MaterialTheme.typography.titleSmall)
-                FormField(label = "Username (optional)", value = state.username, onValueChange = onUsernameChange)
-                PasswordField(state.password, onPasswordChange, onDone = onSave)
-
-                if (state.rpcUrl != null) {
-                    Text(
-                        state.rpcUrl,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+            }
+            ListItem(
+                headline = "Use HTTPS",
+                modifier = Modifier.widthIn(max = 560.dp),
+                leadingIcon = AppIcons.Lock,
+                trailing = ListItemTrailing.Switch(checked = state.useHttps, onCheckedChange = onUseHttpsChange),
+            )
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 560.dp)
+                    .fillMaxWidth(),
+            ) {
+                SectionHeader("Authentication")
+                Column(
+                    modifier = Modifier.padding(horizontal = Spacing.s16),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.s12),
+                ) {
+                    TextField(
+                        label = "Username (optional)",
+                        value = state.username,
+                        onValueChange = onUsernameChange,
+                        keyboardOptions = next,
                     )
-                }
-                Spacer(Modifier.padding(4.dp))
-                Button(onClick = onSave, modifier = Modifier.fillMaxWidth()) {
-                    Text("Save connection")
+                    PasswordField(
+                        label = "Password (optional)",
+                        value = state.password,
+                        onValueChange = onPasswordChange,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done,
+                        ),
+                        keyboardActions = KeyboardActions(onDone = { onSave() }),
+                    )
+                    if (state.rpcUrl != null) {
+                        Text(
+                            state.rpcUrl,
+                            style = AppTheme.typography.bodySmall,
+                            color = AppTheme.colors.onSurfaceVariant,
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+// The save action stays visible above the keyboard, so the user does not scroll to find it.
+@Composable
+private fun SaveBar(onSave: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(AppTheme.colors.surface)
+            .navigationBarsPadding()
+            .imePadding()
+            .padding(Spacing.s16),
+        contentAlignment = Alignment.Center,
+    ) {
+        Button(
+            text = "Save",
+            onClick = onSave,
+            modifier = Modifier
+                .widthIn(max = 528.dp)
+                .fillMaxWidth(),
+        )
     }
 }
 
