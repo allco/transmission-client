@@ -49,8 +49,9 @@ The directory `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/` holds t
   composables of the feature.
   A screen is a stateful `XxxScreen(viewModel = viewModel { … })`. It collects a `StateFlow` and
   passes the state and the callbacks to a stateless `XxxContent` in the same file.
-  The ViewModels come from `org.jetbrains.androidx.lifecycle`. The form state is an immutable data
-  class with computed validation properties.
+  The ViewModels come from `org.jetbrains.androidx.lifecycle`. A ViewModel keeps the text that
+  the user typed and the validation rules private. It exposes the content state
+  (`ConnectionContentState`) and sends events (`ConnectionEvent`).
 - `theme/Theme.kt` holds the Material 3 light and dark colour schemes (red seed). The Figma design
   file uses the same palette as colour variables.
 - In `data/`, `ConnectionRepository` is an in-memory singleton. Thus the app does not persist the

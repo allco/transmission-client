@@ -11,6 +11,12 @@ In this document, "server" means the Transmission daemon. "Server configuration"
 that this app keeps for one server: the name, the address and the credentials. The RPC sections
 refer to the [Transmission RPC API](transmission-rpc-api.md).
 
+The [Figma design file](https://www.figma.com/design/2UXyddsaD6zijr7h0kdmox) shows the mobile
+screens of these features. The page "Screens" has four flows: A (onboarding and servers), B
+(torrent list), C (torrent details and add torrent) and D (server settings and about). A section
+of this document gives the codes of its screens, for example "Figma: A2". The design is a
+proposal, not a decision.
+
 ## Contents
 
 1. [Status values](#1-status-values)
@@ -43,7 +49,8 @@ yet. The name is a suggestion.
 | [Splash](#31-splash) | Screen | `splash/` | Done | — |
 | [Welcome](#32-welcome) | Screen | *`welcome/`* | Planned | — |
 | [ServerEditor](#33-servereditor) | Screen | `connection/` | Partial | 2, 7.1 |
-| [ServerList](#34-serverlist) | Screen | *`serverList/`* | Planned | — |
+| [ServerList](#34-serverlist) | Bottom sheet | *`serverList/`* | Planned | — |
+| [DemoServer](#35-demoserver) | Mode | *`demo/`* | Planned | — (stub) |
 | [TorrentList](#41-torrentlist) | Screen | *`torrentList/`* | Planned | 4.2, 4.3, 5.2, 5.3, 5.6, 7.2 |
 | [TorrentDetails](#42-torrentdetails) | Screen | *`torrentDetails/`* | Planned | 4.3, 4.4, 4.8 |
 | [AddTorrent](#43-addtorrent) | Screen or sheet | *`addTorrent/`* | Planned | 4.5, 5.3, 7.3 |
@@ -56,6 +63,7 @@ yet. The name is a suggestion.
 | [ServerInfo](#54-serverinfo) | Screen | *`serverInfo/`* | Planned | 5.1, 5.8 |
 | [BandwidthGroups](#55-bandwidthgroups) | Screen | *`bandwidthGroups/`* | Idea | 5.7 |
 | [AppSettings](#61-appsettings) | Screen | *`appSettings/`* | Planned | — |
+| [About](#64-about) | Screen | *`about/`* | Planned | 5.1 |
 | [LinkIntake](#62-linkintake) | Platform entry | *`linkIntake/`* | Planned | 4.5 |
 | [Notifications](#63-notifications) | Background | *`notifications/`* | Idea | 4.3 |
 
@@ -66,6 +74,7 @@ flowchart LR
     Splash -->|no server| Welcome
     Splash -->|server exists| TorrentList
     Welcome --> ServerEditor
+    Welcome -->|demo| TorrentList
     ServerEditor --> TorrentList
     TorrentList --> ServerList
     ServerList --> ServerEditor
@@ -75,6 +84,7 @@ flowchart LR
     TorrentList --> ServerSettings
     TorrentList --> ServerStats
     TorrentList --> AppSettings
+    TorrentList --> About
     TorrentList -.-> RemoveTorrent
     TorrentList -.-> MoveTorrent
     TorrentList -.-> Labels
@@ -93,6 +103,7 @@ The splash screen shows the app logo, and then opens the next screen.
   configurations, the splash screen must open one of these screens:
   - Welcome, when no server configuration exists.
   - TorrentList, when a server configuration exists.
+- **Figma:** A1.
 
 ### 3.2 Welcome
 
@@ -101,9 +112,12 @@ ServerEditor.
 
 - **Status:** Planned.
 - **Content:**
-  - A short text that tells the user to add a Transmission server.
-  - A button that opens ServerEditor.
+  - The app logo, a title and one short line of text.
+  - A card "Connect your server" with the button "Add server". The button opens ServerEditor.
+  - A card "Try the demo" with the button "Open demo". The button opens TorrentList on
+    DemoServer.
   - On the web build only: a note about the CORS proxy (RPC section 7.4).
+- **Figma:** A2, A3 (dark).
 
 ### 3.3 ServerEditor
 
@@ -122,6 +136,10 @@ ServerEditor adds a server configuration or changes a server configuration.
   - Storage that persists after the app stops. PROPOSAL-1 is open for this item.
   - The edit mode: open an existing server configuration and change it.
   - The remove action.
+- **Figma:** A4 to A12. The screens show the empty form, the validation errors, the edit mode
+  and the remove dialog. They also show the test states: in progress, success, failure and host
+  not allowed. A15 and A16 show the connect states after "Save": connecting, and server not
+  available.
 
 ### 3.4 ServerList
 
@@ -131,8 +149,24 @@ ServerList shows all server configurations. The user selects the active server h
   (PROPOSAL-1).
 - **Actions:** Select the active server. Add a server (opens ServerEditor). Edit a server. Remove a
   server.
-- **Note:** If the user has only one server, the app can skip this screen. The app can also show
-  the list as a menu on TorrentList.
+- **Form:** The Figma design shows ServerList as a bottom sheet. The server icon in the top bar of
+  TorrentList opens the sheet. Each row shows the name, the status (connected or offline) and the
+  address. DemoServer is the last row.
+- **Figma:** A13.
+
+### 3.5 DemoServer
+
+DemoServer lets the user see the screens and try the actions of this app without a real server.
+
+- **Status:** Planned.
+- **How it works:** DemoServer is a stub of the RPC client interface in this app. It holds sample
+  torrents and sample server data in memory. It sends no request over the network. The features
+  use the same interface for DemoServer and for a real server.
+- **Entry points:** The card "Try the demo" on Welcome. The row "Demo server" in ServerList.
+- **Content:** TorrentList shows the title "Demo server" and a banner: "This is the demo server.
+  The torrents are samples." The banner has the action "Add server".
+- **Changes:** The user can do all actions. The app does not keep the changes after it stops.
+- **Figma:** A14.
 
 ---
 
@@ -162,6 +196,15 @@ TorrentList is the main screen. The screen shows the torrents of the active serv
   - Set the labels (opens Labels).
 - **Entry points:** A button that opens AddTorrent. A control for TurtleMode. A menu that opens
   the session features and AppSettings.
+- **Design:** The Figma design shows these parts:
+  - A top bar with the server name, the connection status and three icons: search, ServerList and
+    a menu.
+  - The menu has these items: Resume all, Pause all, Sort by, Speed limit (TurtleMode), Server
+    settings and About.
+  - A long press on a row starts the selection of more than one torrent. The top bar then shows
+    the actions start, stop and remove.
+- **Figma:** B1 to B16. The screens include the empty list, the loading state, the lost
+  connection, the search with no results and the sort sheet.
 
 ### 4.2 TorrentDetails
 
@@ -182,6 +225,11 @@ TorrentDetails shows one torrent. The screen gets the heavy fields for this torr
 - **Actions:** The same actions as TorrentList, for this torrent only.
 - **Note:** `sequential_download` exists on Transmission 4.1+ only. Hide the option on older
   servers.
+- **Design:** The Figma design shows the tabs Overview, Files, Peers and Trackers. It has no
+  Pieces tab and no Options tab. A menu in the top bar holds these items: Reannounce, Move data,
+  Rename, Copy magnet link, Bandwidth priority, Speed limits and Queue position. Each item opens a
+  dialog or a sheet. The team must decide between the Options tab and the menu.
+- **Figma:** C1 to C14.
 
 ### 4.3 AddTorrent
 
@@ -194,6 +242,8 @@ AddTorrent adds a torrent to the server.
 - **Options:** Download directory, with the free space of that directory. Start paused. Labels.
 - **Result:** `torrent_duplicate` is not a failure. The app tells the user that the server already
   has the torrent.
+- **Figma:** C15 to C19. The screens show a magnet link, a .torrent file, a link that is not
+  valid, the result "added" and the result "duplicate".
 - **Idea:** Select the files before the app adds the torrent. For a .torrent file, the app must
   parse the file on the device. For a magnet link, the metadata does not exist before the server
   adds the torrent.
@@ -256,6 +306,7 @@ ServerSettings shows and changes the settings of the server (`session_get`, `ses
   - Blocklist: on or off, URL, number of rules. An "Update" button (`blocklist_update`).
 - **Note:** Some fields exist on some server versions only. Show only the fields that the server
   returns.
+- **Figma:** D1 to D10. The design has no Blocklist section yet.
 
 ### 5.3 ServerStats
 
@@ -294,7 +345,7 @@ AppSettings holds the settings of this app. These settings are not server settin
   - Theme: system, light or dark.
   - Polling interval for TorrentList.
   - Units: the server units or fixed units.
-  - A link to the open-source licenses.
+  - A link to About.
 
 ### 6.2 LinkIntake
 
@@ -317,6 +368,17 @@ Notifications tells the user when a download is complete.
 - **Problem:** The app must poll the server in the background. Each platform limits background
   work in a different way. The web build cannot do it.
 
+### 6.4 About
+
+About shows the version data of this app and of the server.
+
+- **Status:** Planned.
+- **Content:** The app name and version. The Transmission version and the RPC version of the
+  server. Links to the source code, the open-source licenses and the privacy text.
+- **Note:** About and ServerInfo both show the server version. ServerInfo can become a part of
+  About. See [Open questions](#8-open-questions).
+- **Figma:** D11, D12.
+
 ---
 
 ## 7. Shared parts
@@ -327,6 +389,7 @@ have the name of their role.
 | Part | Package | Status | Used by |
 |---|---|---|---|
 | RPC client: transport, session id, wire format, errors | *`rpc/`* | Planned | All features that talk to the server |
+| Demo RPC client: the stub for DemoServer, with sample data | *`rpc/`* or *`demo/`* | Planned | DemoServer and all features that talk to the server |
 | Server configuration storage | `data/` | Partial (in memory only) | ServerEditor, ServerList, Splash |
 | Formatters: size, speed, ETA, ratio, dates | *`format/`* | Planned | TorrentList, TorrentDetails, ServerStats |
 | Connection state: online, offline, auth failure | *`rpc/`* or `data/` | Planned | TorrentList, all session features |
@@ -335,10 +398,12 @@ have the name of their role.
 ## 8. Open questions
 
 - Does the `connection/` package get the name `serverEditor/`?
-- Is ServerList a separate screen, or a menu on TorrentList?
+- Is ServerList a bottom sheet, as in the Figma design, or a separate screen?
 - Labels: when the user changes the labels of more than one torrent, does the app replace the
   labels or add to them?
 - Is TurtleMode a separate feature package, or a part of TorrentList?
-- Is ServerInfo a separate screen, or a section of ServerSettings?
+- Is ServerInfo a separate screen, a section of ServerSettings, or a part of About?
+- TorrentDetails: does the app use an Options tab, or the menu and the sheets in the Figma design?
+- DemoServer: does the stub live in `rpc/` or in its own `demo/` package?
 - Does the app need a navigation library when it has more than three screens? Today, `App.kt`
   uses an enum and a `Crossfade`.

@@ -5,8 +5,9 @@
 
 ## Problem
 
-`ConnectionRepository` keeps the saved server connection in memory only. When the app stops, the
-user loses the connection. The app must keep a list of servers between runs on all four targets:
+`ConnectionRepository` keeps the server configuration in memory only. When the app stops, the
+user loses the server configuration. The app must keep a list of server configurations between
+runs on all four targets:
 Android, iOS, desktop (JVM) and the web (Wasm and JS).
 
 The data is small. A user has between 1 and 10 servers. The app always reads the full list, and the
