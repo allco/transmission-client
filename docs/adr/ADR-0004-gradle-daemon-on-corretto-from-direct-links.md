@@ -1,4 +1,4 @@
-# ADR-0007: The Gradle daemon runs on Amazon Corretto, downloaded from direct CDN links
+# ADR-0004: The Gradle daemon runs on Amazon Corretto, downloaded from direct CDN links
 
 - **Status:** Accepted
 - **Date:** 2026-10-08

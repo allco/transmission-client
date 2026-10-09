@@ -44,7 +44,7 @@ The directory `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/` holds t
 
 - `App.kt` holds the theme and the top-level navigation. A `rememberSaveable` enum switches from
   Splash to Connection inside a `Crossfade`. The app uses no navigation library.
-- `<feature>/` (`connection/`, `splash/`): each feature has one root package (ADR-0006). This
+- `<feature>/` (`connection/`, `splash/`): each feature has one root package (ADR-0001). This
   package holds the ViewModel and the UI state of the feature. `<feature>/views/` holds the
   composables of the feature.
   A screen is a stateful `XxxScreen(viewModel = viewModel { … })`. It collects a `StateFlow` and
@@ -59,19 +59,45 @@ The directory `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/` holds t
 ## Conventions
 
 The ADRs in `docs/adr/` record the patterns that this codebase follows. `docs/README.md` holds the
-index of the ADRs. Obey the ADRs. Keep the ADRs current when we make decisions:
+index of the ADRs, in groups. Obey the ADRs. Keep the ADRs current when we make decisions:
 
-1. When we agree on a new pattern, record it as a new ADR in the same change.
-2. Use `docs/adr/template.md` for the new ADR.
-3. Name the new ADR `ADR-<number>-<title-in-kebab-case>.md`.
-4. When a pattern changes, supersede or amend the affected ADR.
-5. Then fix the example paths in the other ADRs and in this file.
+1. When we agree on a new pattern, find the ADR that covers the subject. Add the pattern to that
+   ADR.
+2. If no ADR covers the subject, make a new ADR from `docs/adr/template.md`. Name it
+   `ADR-<number>-<title-in-kebab-case>.md`. Add it to a group in `docs/README.md`.
+3. When a pattern changes, edit the ADR in place. When a pattern no longer applies, delete it.
+   Do not keep superseded ADRs. The git history keeps the old versions.
+4. Then fix the links and the example paths in the other ADRs, in `docs/reference/` and in this
+   file.
 
-This list gives a short summary of each accepted ADR, in groups:
+This list gives a short summary of each ADR, in groups:
 
-**Composables**
+**Code structure**
 
-- **ADR-0010:** This ADR holds all rules for Composables. It supersedes ADR-0001, ADR-0003 and ADR-0008.
+- **ADR-0001:** Feature packages and file layout.
+  - The root package holds `App.kt` and one package for each feature. Name each feature package
+    after the feature (`connection/`, `splash/`). The project has no `ui/` package.
+  - Put the ViewModel of a feature at the root of the feature package. Put the UI state class and
+    the event class of the ViewModel in their own files (`ConnectionContentState.kt`,
+    `ConnectionEvent.kt`). Put the Composables of the feature in `views/`.
+  - Put code that several features use in root packages that have the name of their role
+    (`theme/`, `data/`).
+  - If a component (ViewModel, view, use case, …) fits in one file, keep it in one file.
+  - If a component has parts that only this component uses, put the component and its parts in a
+    folder. Name the folder after the component in camelCase, for example `connectionScreen/`.
+  - Make this folder only when the package of the component holds a second component. Until then,
+    put the parts directly in the package (today: `connection/views/ConnectionScreen.kt`,
+    `FormField.kt` and `PasswordField.kt`).
+  - If a second component uses a part, move the part higher in the folder tree. The part then
+    becomes a component itself.
+- **ADR-0002:** Make a declaration `internal` if no other Gradle module and no Swift code calls it.
+  Make it `private` if only one file uses it. Today the only public declarations are `App()` and
+  `MainViewController()`. This rule prepares `shared` so that we can split it into several modules
+  later.
+
+**UI**
+
+- **ADR-0003:** Composable conventions.
   - Put each non-trivial Composable in its own file. Put its `@Preview` functions in the same
     file. Put the preview sample data in a file-level `private val dummy<ElementName>`.
   - Put the container `XxxScreen` of a screen and its renderer `XxxContent` in one file,
@@ -86,41 +112,15 @@ This list gives a short summary of each accepted ADR, in groups:
     `ConnectionContentState`). Keep the working data of the ViewModel private. Send a one-time
     signal as an event (`ConnectionEvent`), not as a state field.
 
-**Code structure**
-
-- **ADR-0002:** Make a declaration `internal` if no other Gradle module and no Swift code calls it.
-  Make it `private` if only one file uses it. Today the only public declarations are `App()` and
-  `MainViewController()`. This rule prepares `shared` so that we can split it into several modules
-  later.
-- **ADR-0005:**
-  - If a component (ViewModel, view, use case, …) fits in one file, keep it in one file.
-  - If a component has parts that only this component uses, put the component and its parts in a
-    folder. Name the folder after the component in camelCase, for example `connectionScreen/`.
-  - Make this folder only when the package of the component holds a second component. Until then,
-    put the parts directly in the package (today: `connection/views/ConnectionScreen.kt`,
-    `FormField.kt` and `PasswordField.kt`).
-  - If a second component uses a part, move the part higher in the folder tree. The part
-    then becomes a component itself.
-- **ADR-0006:**
-  - The root package holds `App.kt` and one package for each feature. Name each feature package
-    after the feature (`connection/`, `splash/`). The project has no `ui/` package.
-  - Put the ViewModel of a feature at the root of the feature package. Put the composables of the
-    feature in `views/`.
-  - Put the UI state class and the event class of a ViewModel in their own files
-    (`ConnectionContentState.kt`, `ConnectionEvent.kt`).
-  - Put code that several features use in root packages that have the name of their role
-    (`theme/`, `data/`).
-  - ADR-0006 supersedes ADR-0004.
-
 **Build**
 
-- **ADR-0007:** The Gradle daemon runs on Amazon Corretto 25. `gradle/gradle-daemon-jvm.properties`
+- **ADR-0004:** The Gradle daemon runs on Amazon Corretto 25. `gradle/gradle-daemon-jvm.properties`
   sets this JVM with direct `corretto.aws` download links that pin the version. Do not use foojay.
   Do not add the resolver plugin again. Do not run `updateDaemonJvm`.
 
 **Docs**
 
-- **ADR-0009:** Use the `asd-ste100` skill to write all Markdown files, KDoc, code comments and
+- **ADR-0005:** Use the `asd-ste100` skill to write all Markdown files, KDoc, code comments and
   commit messages in Simplified Technical English. Use the Strict mode for `AGENTS.md`, code
   comments and KDoc, and the STE-flavored mode for `README.md`, ADRs and `docs/reference/`. Before
   you commit, run `python3 -I .claude/skills/asd-ste100/scripts/ste-lint.py <file.md>` on each

@@ -1,18 +1,12 @@
-# ADR-0010: Composable conventions
+# ADR-0003: Composable conventions
 
 - **Status:** Accepted
-- **Date:** 2026-10-09
-- **Supersedes:** [ADR-0001](ADR-0001-one-composable-per-file.md),
-  [ADR-0003](ADR-0003-state-class-for-composables-with-many-parameters.md),
-  [ADR-0008](ADR-0008-composables-take-only-what-they-use.md)
+- **Date:** 2026-10-07
 
 ## Context
 
-Three ADRs gave the rules for Composables: ADR-0001 (files and previews), ADR-0003 (state classes)
-and ADR-0008 (the data that a Composable takes). A reader had to read three files to write one
-Composable. This ADR puts all the rules for Composables in one file. The rules do not change.
-
-The rules solve these problems:
+This ADR holds all rules for Composables: files, previews, screens, state classes and the data
+that a Composable takes. The rules solve these problems:
 
 - **Long files.** When a screen grows, its file collects private helper Composables. The previews
   are then far from the code that they show. The helpers are hard to find and to reuse.
@@ -155,7 +149,7 @@ show, and `rpcUrl: String?`. When `ConnectionViewModel` saves the connection, it
 - Helpers that more than one file uses must be `internal`, not `private`
   (see [ADR-0002](ADR-0002-internal-by-default.md)).
 - The code has more files, and the files are smaller. The `views/` package of each feature keeps
-  these files together (see [ADR-0006](ADR-0006-features-at-the-package-root.md)).
+  these files together (see [ADR-0001](ADR-0001-feature-packages-and-file-layout.md)).
 - The code has more small state classes. The ViewModel makes them with plain code. Thus a test can
   check the state without Compose.
 - When a change adds a third data parameter to a Composable, the same change adds its state class.

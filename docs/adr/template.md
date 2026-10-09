@@ -1,14 +1,14 @@
 <!--
 Do these steps:
 1. Copy this file to docs/adr/ADR-<number>-<title-in-kebab-case>.md.
-2. Use the next four-digit number, for example ADR-0011-use-ktor-for-rpc.md.
+2. Use the next free four-digit number, for example ADR-0006-use-ktor-for-rpc.md.
 3. Use the same number and title in the heading below.
-4. Add a row to the table in docs/README.md.
+4. Add a row to the table of its group in docs/README.md.
 5. Delete this comment.
 -->
 # ADR-NNNN: Title in the imperative
 
-- **Status:** Proposed | Accepted | Superseded by ADR-NNNN
+- **Status:** Proposed | Accepted
 - **Date:** YYYY-MM-DD
 
 ## Context

@@ -1,7 +1,7 @@
 # Documentation
 
 This document tells how to write the docs, the code comments and the commit messages in this
-repository. [ADR-0009](../adr/ADR-0009-write-docs-in-simplified-technical-english.md) records the
+repository. [ADR-0005](../adr/ADR-0005-write-docs-in-simplified-technical-english.md) records the
 decision. This document gives the procedure.
 
 ## Contents

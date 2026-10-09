@@ -1,7 +1,8 @@
 # Features
 
 This document lists the features of this app. A feature is one part of the app that the user sees
-as a unit, for example a screen or a dialog. Each feature gets one root package (ADR-0006).
+as a unit, for example a screen or a dialog. Each feature gets one root package
+([ADR-0001](../adr/ADR-0001-feature-packages-and-file-layout.md)).
 
 The list includes features that do not exist yet. The list is a plan, not a decision. Before you
 build a feature, check the open [proposals](../proposals/) and the [ADRs](../adr/).
@@ -320,7 +321,7 @@ Notifications tells the user when a download is complete.
 
 ## 7. Shared parts
 
-These parts are not features. Several features use them. ADR-0006 puts them in root packages that
+These parts are not features. Several features use them. ADR-0001 puts them in root packages that
 have the name of their role.
 
 | Part | Package | Status | Used by |
