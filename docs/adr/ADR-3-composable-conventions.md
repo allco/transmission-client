@@ -1,4 +1,4 @@
-# ADR-0003: Composable conventions
+# ADR-3: Composable conventions
 
 - **Status:** Accepted
 - **Date:** 2026-10-07
@@ -11,8 +11,10 @@ that a Composable takes. The rules solve these problems:
 - **Long files.** When a screen grows, its file collects private helper Composables. The previews
   are then far from the code that they show. The helpers are hard to find and to reuse.
 - **Long parameter lists.** Composables collect parameters: a label, a value, a placeholder, an
-  error, a keyboard type. A long list is hard to read at the call site. The previews repeat the
-  same arguments. The list does not show which values belong together.
+  error, a keyboard type. Some of these values change at runtime. The call site sets the other
+  values, and they do not change. When one class holds both kinds, the caller must make a new object for each call.
+  Most fields of that object are constants, and the class name says "state" for data that is
+  not state.
 - **Pass-through objects.** The easy way to give data to a Composable is to pass any object that
   is available: the whole state of the ViewModel, a domain model or a repository result. The
   Composable then depends on fields that it never reads, and recomposes when these fields change.
@@ -31,7 +33,7 @@ flowchart LR
     VM[XxxViewModel] -->|StateFlow of XxxContentState| Screen[XxxScreen]
     VM -->|Flow of XxxEvent| Screen
     Screen -->|state + callbacks| Content[XxxContent]
-    Content -->|FormFieldState + callback| Child[FormField]
+    Content -->|config + state values + callback| Child[FormField]
     Content -->|user action| Screen
     Screen -->|function call| VM
 ```
@@ -54,7 +56,8 @@ flowchart LR
   - Make the preview functions `private`.
 - Put the preview sample data in a file-level `private val dummy<ElementName>`, next to the
   previews. Examples are `dummyConnectionContentState`, `dummyConnectionContentStateWithErrors`
-  and `dummyPassword`. The previews use these values, not inline literals.
+  and `dummyPassword`. The previews use these values for state, not inline literals. Config
+  values (see section 5) can be literals, as at a real call site.
 - A Composable that takes a ViewModel has no previews. A preview would need a real ViewModel and
   its dependencies. The preview would also show only the initial state of the ViewModel.
 
@@ -84,7 +87,8 @@ Example: `connection/views/` holds `ConnectionScreen.kt` (`ConnectionScreen` and
   part of it. Do not pass such an object when the Composable must apply logic to it to get the
   data that it shows. Give the Composable its own state, ready to show:
   - For the renderer of a screen, `XxxContent`: a `XxxContentState`.
-  - For other Composables: a `<FunctionName>State` (see section 5).
+  - For other Composables: its state values as parameters, or a `<FunctionName>State` when it has
+    more than two state values (see section 5).
 - "Ready to show" means that the Composable does no business logic:
   - An error that the Composable must not show yet is already `null`.
   - The state already holds derived values, for example the RPC URL preview. A derived value is
@@ -92,37 +96,66 @@ Example: `connection/views/` holds `ConnectionScreen.kt` (`ConnectionScreen` and
 - Pass the callbacks one by one: one callback for each user action that the Composable can
   trigger.
 
-### 5. State classes for more than two data parameters
+### 5. State and config parameters
 
-- A **data parameter** is a parameter that is not a callback (a function type), a `Modifier` or a
-  ViewModel.
-- A Composable with **more than two** data parameters takes a `<FunctionName>State` class, for
-  example `FormField` → `FormFieldState`. The Composable takes `state: <FunctionName>State` in
-  place of these data parameters. Callbacks and `modifier` stay separate parameters.
+A Composable has these kinds of parameters:
+
+| Kind | Meaning | Examples |
+|---|---|---|
+| **State** | A value that can change at runtime. It comes from the ViewModel or from a parent. | `value`, `error`, `checked`, a list of items |
+| **Config** | A value that the call site fixes. It does not change while the screen shows. | `label`, `placeholder`, `keyboardType`, an icon, a text style |
+| Callback | A function that the Composable calls on a user action | `onValueChange` |
+| Other | `Modifier`, a ViewModel | `modifier` |
+
+- Make each config value a plain parameter. Give it a default when most call sites use the same
+  value. Material components, for example `OutlinedTextField`, use the same style.
+- Do not put config values in a state class. A state class with config values makes the call site
+  build a new object of constants on each recomposition.
+- A Composable with **more than two state values** takes a `<FunctionName>State` class, for example
+  `TorrentRow` → `TorrentRowState`. The Composable takes `state: <FunctionName>State` in place of
+  these state values. Config values, callbacks and `modifier` stay separate parameters.
+- The ViewModel or the parent makes the `<FunctionName>State`. The call site passes it through and
+  does not build it from other fields (see section 6).
 - Declare the state class **at the top of the file of the Composable**, before the Composable. The
   state class is:
-  - an immutable `data class` with `val` properties, and with defaults for optional values.
+  - an immutable `data class` with `val` properties.
   - as visible as the Composable: `internal` or `private` (see
-    [ADR-0002](ADR-0002-internal-by-default.md)).
+    [ADR-2](ADR-2-internal-by-default.md)).
 - The preview data for such a Composable is a set of `dummy<FunctionName>State…` values, for
-  example `dummyFormFieldState` and `dummyFormFieldStateWithError`.
-- An existing state object counts as one data parameter, but only if the Composable uses all of
+  example `dummyTorrentRowState` and `dummyTorrentRowStateWithError`.
+- An existing state object counts as one state value, but only if the Composable uses all of
   the object (see section 4). For this reason, `ConnectionContent` takes `ConnectionContentState`.
   This class holds only the data that `ConnectionContent` shows.
+- Order the parameters as Compose does: the required parameters, then `modifier`, then the
+  optional parameters.
 
-Example, in `connection/views/FormField.kt`:
+Example, in `connection/views/FormField.kt`. `FormField` has two state values (`value` and
+`error`). Thus it has no state class:
 
 ```kotlin
-internal data class FormFieldState(
-    val label: String,
-    val value: String,
-    val placeholder: String? = null,
-    val error: String? = null,
-    val keyboardType: KeyboardType = KeyboardType.Text,
-)
-
 @Composable
-internal fun FormField(state: FormFieldState, onValueChange: (String) -> Unit, modifier: Modifier = Modifier)
+internal fun FormField(
+    label: String,                                  // config
+    value: String,                                  // state
+    onValueChange: (String) -> Unit,                // callback
+    modifier: Modifier = Modifier,
+    placeholder: String? = null,                    // config
+    error: String? = null,                          // state
+    keyboardType: KeyboardType = KeyboardType.Text, // config
+)
+```
+
+The call site in `ConnectionContent` makes no object:
+
+```kotlin
+FormField(
+    label = "Host",
+    value = state.host,
+    onValueChange = onHostChange,
+    placeholder = "192.168.1.10 or nas.local",
+    error = state.hostError,
+    keyboardType = KeyboardType.Uri,
+)
 ```
 
 ### 6. The ViewModel makes the content state and sends events
@@ -147,11 +180,12 @@ show, and `rpcUrl: String?`. When `ConnectionViewModel` saves the connection, it
   with a name, and you can use it again.
 - Previews build the state directly. They do not need to know the upstream validation rules.
 - Helpers that more than one file uses must be `internal`, not `private`
-  (see [ADR-0002](ADR-0002-internal-by-default.md)).
+  (see [ADR-2](ADR-2-internal-by-default.md)).
 - The code has more files, and the files are smaller. The `views/` package of each feature keeps
-  these files together (see [ADR-0001](ADR-0001-feature-packages-and-file-layout.md)).
+  these files together (see [ADR-1](ADR-1-feature-packages-and-file-layout.md)).
 - The code has more small state classes. The ViewModel makes them with plain code. Thus a test can
   check the state without Compose.
-- When a change adds a third data parameter to a Composable, the same change adds its state class.
+- When a change adds a third state value to a Composable, the same change adds its state class.
+- A change to a label or a placeholder is a change at the call site only. No state class changes.
 - When an upstream model gets a new field, a Composable does not change, unless it must show that
   field.

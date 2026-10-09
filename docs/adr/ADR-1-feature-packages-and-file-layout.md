@@ -1,4 +1,4 @@
-# ADR-0001: Feature packages and file layout
+# ADR-1: Feature packages and file layout
 
 - **Status:** Accepted
 - **Date:** 2026-10-07
@@ -9,7 +9,7 @@ The source tree must answer two questions:
 
 - **Where is a feature?** A feature package holds more than UI: its ViewModel and UI state now,
   and use cases and feature-only logic later. Thus a `ui/` package level would mislead. Each
-  feature is also a likely future Gradle module ([ADR-0002](ADR-0002-internal-by-default.md)).
+  feature is also a likely future Gradle module ([ADR-2](ADR-2-internal-by-default.md)).
   The top level of the source tree must read as the list of features.
 - **What belongs to what?** Some components fit in one file. Other components need helpers that
   nothing else uses: sub-Composables, mappers, utilities. When these helpers are next to unrelated
@@ -74,7 +74,7 @@ A feature package `<feature>/` holds:
 - the events that the ViewModel sends, in their own file, for example `ConnectionEvent.kt`.
 - the use cases and other logic that only this feature uses.
 - `views/`, with all Composables of the feature and their `<FunctionName>State` classes
-  ([ADR-0003](ADR-0003-composable-conventions.md)).
+  ([ADR-3](ADR-3-composable-conventions.md)).
 
 A feature without a ViewModel, like `splash`, has only `views/`.
 
@@ -102,7 +102,7 @@ A component is a ViewModel, a UI element, a use case or a repository.
   it. The part becomes a component: a file, or a folder if it has parts.
 - This rule applies to all kinds of components, and it nests. A part that gets parts becomes a
   folder in the folder of its owner.
-- [ADR-0003](ADR-0003-composable-conventions.md) applies in a folder too: one non-trivial
+- [ADR-3](ADR-3-composable-conventions.md) applies in a folder too: one non-trivial
   Composable in each file.
 
 Today each feature has one screen. Thus `views/` holds the screen and its parts directly (see the

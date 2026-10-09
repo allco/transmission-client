@@ -1,4 +1,4 @@
-# ADR-0002: Everything that is not exposed is `internal`
+# ADR-2: Everything that is not exposed is `internal`
 
 - **Status:** Accepted
 - **Date:** 2026-10-07

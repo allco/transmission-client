@@ -1,4 +1,4 @@
-# ADR-0005: Write docs in Simplified Technical English, with Mermaid diagrams
+# ADR-5: Write docs in Simplified Technical English, with Mermaid diagrams
 
 - **Status:** Accepted
 - **Date:** 2026-10-08

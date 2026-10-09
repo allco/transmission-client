@@ -1,4 +1,4 @@
-# PROPOSAL-0001: Store the server configurations in multiplatform-settings, and passwords in secure storage
+# PROPOSAL-1: Store the server configurations in multiplatform-settings, and passwords in secure storage
 
 - **Status:** Open
 - **Date:** 2026-10-08
@@ -69,4 +69,4 @@ The table shows the versions that were on Maven Central and Google Maven on 2026
 
 ## After the team accepts this proposal
 
-Write an ADR that records the decision. Set the status of this proposal to "Accepted as ADR-NNNN".
+Write an ADR that records the decision. Set the status of this proposal to "Accepted as ADR-N".

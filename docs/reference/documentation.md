@@ -1,7 +1,7 @@
 # Documentation
 
 This document tells how to write the docs, the code comments and the commit messages in this
-repository. [ADR-0005](../adr/ADR-0005-write-docs-in-simplified-technical-english.md) records the
+repository. [ADR-5](../adr/ADR-5-write-docs-in-simplified-technical-english.md) records the
 decision. This document gives the procedure.
 
 ## Contents
@@ -175,8 +175,8 @@ sequenceDiagram
 | Document | Location | Structure |
 |---|---|---|
 | Agent guide | `AGENTS.md` | Commands, architecture, conventions. A summary of each ADR. |
-| ADR | `docs/adr/ADR-NNNN-title.md` | Copy `docs/adr/template.md`. Sections: Context, Decision, Consequences. |
-| Proposal | `docs/proposals/PROPOSAL-NNNN-title.md` | Sections: Problem, Options, Proposal, Consequences, Open questions |
+| ADR | `docs/adr/ADR-N-title.md` | Copy `docs/adr/template.md`. Sections: Context, Decision, Consequences. |
+| Proposal | `docs/proposals/PROPOSAL-N-title.md` | Sections: Problem, Options, Proposal, Consequences, Open questions |
 | Reference | `docs/reference/<title>.md` | A title, a short purpose, a contents list, numbered sections |
 | Docs index | `docs/README.md` | One table row or one list item for each document |
 | KDoc | Kotlin source | See below |

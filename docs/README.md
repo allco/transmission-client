@@ -12,26 +12,26 @@ the groups.
 
 | # | Decision |
 |---|---|
-| [ADR-0001](adr/ADR-0001-feature-packages-and-file-layout.md) | Features are packages at the root. A component is one file, or a folder when it has parts. |
-| [ADR-0002](adr/ADR-0002-internal-by-default.md) | All declarations that other modules do not call are `internal` |
+| [ADR-1](adr/ADR-1-feature-packages-and-file-layout.md) | Features are packages at the root. A component is one file, or a folder when it has parts. |
+| [ADR-2](adr/ADR-2-internal-by-default.md) | All declarations that other modules do not call are `internal` |
 
 ### UI
 
 | # | Decision |
 |---|---|
-| [ADR-0003](adr/ADR-0003-composable-conventions.md) | Composables: files, previews, screens, state classes and the data that a Composable takes |
+| [ADR-3](adr/ADR-3-composable-conventions.md) | Composables: files, previews, screens, state classes and the data that a Composable takes |
 
 ### Build
 
 | # | Decision |
 |---|---|
-| [ADR-0004](adr/ADR-0004-gradle-daemon-on-corretto-from-direct-links.md) | The Gradle daemon runs on Amazon Corretto, from direct CDN links |
+| [ADR-4](adr/ADR-4-gradle-daemon-on-corretto-from-direct-links.md) | The Gradle daemon runs on Amazon Corretto, from direct CDN links |
 
 ### Docs
 
 | # | Decision |
 |---|---|
-| [ADR-0005](adr/ADR-0005-write-docs-in-simplified-technical-english.md) | Write docs in Simplified Technical English, with Mermaid diagrams |
+| [ADR-5](adr/ADR-5-write-docs-in-simplified-technical-english.md) | Write docs in Simplified Technical English, with Mermaid diagrams |
 
 The diagram shows how an ADR changes.
 
@@ -49,7 +49,7 @@ To add a decision, do these steps:
 1. Find the group of the decision. If an ADR of the group covers the same subject, add the
    decision to that ADR. Then stop.
 2. Copy [`adr/template.md`](adr/template.md) to `adr/ADR-<number>-<title-in-kebab-case>.md`.
-   Use the next free four-digit number, for example `ADR-0006-use-ktor-for-rpc.md`.
+   Use the next free number, for example `ADR-6-use-ktor-for-rpc.md`.
 3. Complete the sections of the new file.
 4. Add a row for the new ADR to the table of its group. Add a group if no group fits.
 
@@ -65,11 +65,11 @@ gives the problem, the options and the proposed solution. Do not implement an op
 
 | # | Proposal | Status |
 |---|---|---|
-| [PROPOSAL-0001](proposals/PROPOSAL-0001-server-configuration-storage.md) | Store the server configurations in multiplatform-settings, and passwords in secure storage | Open |
+| [PROPOSAL-1](proposals/PROPOSAL-1-server-configuration-storage.md) | Store the server configurations in multiplatform-settings, and passwords in secure storage | Open |
 
 To add a proposal, do these steps:
 
-1. Create `proposals/PROPOSAL-<number>-<title-in-kebab-case>.md`. Use the next four-digit number.
+1. Create `proposals/PROPOSAL-<number>-<title-in-kebab-case>.md`. Use the next free number.
 2. Give these sections: Problem, Options, Proposal, Consequences and Open questions.
 3. Set the status to "Open".
 4. Add a row for the new proposal to the table above.
@@ -77,7 +77,7 @@ To add a proposal, do these steps:
 When the team accepts a proposal, do these steps:
 
 1. Write an ADR that records the decision.
-2. Set the status of the proposal to "Accepted as ADR-NNNN".
+2. Set the status of the proposal to "Accepted as ADR-N".
 
 When the team rejects a proposal, set its status to "Rejected" and give the reason in the file.
 

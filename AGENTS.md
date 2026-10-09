@@ -44,7 +44,7 @@ The directory `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/` holds t
 
 - `App.kt` holds the theme and the top-level navigation. A `rememberSaveable` enum switches from
   Splash to Connection inside a `Crossfade`. The app uses no navigation library.
-- `<feature>/` (`connection/`, `splash/`): each feature has one root package (ADR-0001). This
+- `<feature>/` (`connection/`, `splash/`): each feature has one root package (ADR-1). This
   package holds the ViewModel and the UI state of the feature. `<feature>/views/` holds the
   composables of the feature.
   A screen is a stateful `XxxScreen(viewModel = viewModel { … })`. It collects a `StateFlow` and
@@ -74,7 +74,7 @@ This list gives a short summary of each ADR, in groups:
 
 **Code structure**
 
-- **ADR-0001:** Feature packages and file layout.
+- **ADR-1:** Feature packages and file layout.
   - The root package holds `App.kt` and one package for each feature. Name each feature package
     after the feature (`connection/`, `splash/`). The project has no `ui/` package.
   - Put the ViewModel of a feature at the root of the feature package. Put the UI state class and
@@ -90,14 +90,14 @@ This list gives a short summary of each ADR, in groups:
     `FormField.kt` and `PasswordField.kt`).
   - If a second component uses a part, move the part higher in the folder tree. The part then
     becomes a component itself.
-- **ADR-0002:** Make a declaration `internal` if no other Gradle module and no Swift code calls it.
+- **ADR-2:** Make a declaration `internal` if no other Gradle module and no Swift code calls it.
   Make it `private` if only one file uses it. Today the only public declarations are `App()` and
   `MainViewController()`. This rule prepares `shared` so that we can split it into several modules
   later.
 
 **UI**
 
-- **ADR-0003:** Composable conventions.
+- **ADR-3:** Composable conventions.
   - Put each non-trivial Composable in its own file. Put its `@Preview` functions in the same
     file. Put the preview sample data in a file-level `private val dummy<ElementName>`.
   - Put the container `XxxScreen` of a screen and its renderer `XxxContent` in one file,
@@ -105,22 +105,25 @@ This list gives a short summary of each ADR, in groups:
     UI state, is `private` and has the previews.
   - A Composable takes exactly the data that it renders, plus its callbacks (interface
     segregation). Do not pass a model that the Composable uses only in part.
-  - If a Composable has more than two data parameters, make it take a `<FunctionName>State` data
-    class. Do not count callbacks, `Modifier` or a ViewModel as data parameters. Declare this
-    class at the top of the file of the Composable, for example `FormFieldState` in `FormField.kt`.
+  - Make each config value (label, placeholder, keyboard type, icon) a plain parameter. Do not
+    put config values in a state class.
+  - If a Composable has more than two state values (values that change at runtime), make it take
+    a `<FunctionName>State` data class. Declare this class at the top of the file of the
+    Composable. The ViewModel or the parent makes it. `FormField` has two state values, `value`
+    and `error`, so it has no state class.
   - The ViewModel makes the state of `XxxContent` directly (`ConnectionViewModel` →
     `ConnectionContentState`). Keep the working data of the ViewModel private. Send a one-time
     signal as an event (`ConnectionEvent`), not as a state field.
 
 **Build**
 
-- **ADR-0004:** The Gradle daemon runs on Amazon Corretto 25. `gradle/gradle-daemon-jvm.properties`
+- **ADR-4:** The Gradle daemon runs on Amazon Corretto 25. `gradle/gradle-daemon-jvm.properties`
   sets this JVM with direct `corretto.aws` download links that pin the version. Do not use foojay.
   Do not add the resolver plugin again. Do not run `updateDaemonJvm`.
 
 **Docs**
 
-- **ADR-0005:** Use the `asd-ste100` skill to write all Markdown files, KDoc, code comments and
+- **ADR-5:** Use the `asd-ste100` skill to write all Markdown files, KDoc, code comments and
   commit messages in Simplified Technical English. Use the Strict mode for `AGENTS.md`, code
   comments and KDoc, and the STE-flavored mode for `README.md`, ADRs and `docs/reference/`. Before
   you commit, run `python3 -I .claude/skills/asd-ste100/scripts/ste-lint.py <file.md>` on each
