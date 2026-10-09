@@ -69,7 +69,8 @@ To add an icon, add the icon component to Figma. Then add a property to `AppIcon
 ## 4. Components
 
 Each component has a file with the same name in `component/`. The file has light and dark
-previews.
+previews. `Dialog`, `DropdownMenu` and `BottomSheet` open a popup window. Their previews show the
+panel of the popup, because the preview tools do not draw popup windows.
 
 | Component | Figma component | Main parameters |
 |---|---|---|

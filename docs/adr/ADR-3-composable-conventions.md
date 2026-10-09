@@ -58,6 +58,10 @@ flowchart LR
   previews. Examples are `dummyConnectionContentState`, `dummyConnectionContentStateWithErrors`
   and `dummyPassword`. The previews use these values for state, not inline literals. Config
   values (see section 5) can be literals, as at a real call site.
+- A Composable that opens a popup window, for example a dialog, a dropdown menu or a modal bottom
+  sheet, needs a separate panel. The preview tools do not draw popup windows. Thus put the
+  visible panel in a `private` Composable, for example `DialogPanel`. The public Composable shows
+  the panel in the popup window. The previews show the panel directly.
 - A Composable that takes a ViewModel has no previews. A preview would need a real ViewModel and
   its dependencies. The preview would also show only the initial state of the ViewModel.
 

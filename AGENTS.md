@@ -113,6 +113,8 @@ This list gives a short summary of each ADR, in groups:
 - **ADR-3:** Composable conventions.
   - Put each non-trivial Composable in its own file. Put its `@Preview` functions in the same
     file. Put the preview sample data in a file-level `private val dummy<ElementName>`.
+  - For a dialog, a menu or a modal sheet, put the visible panel in a `private` Composable.
+    Preview the panel, because the preview tools do not draw popup windows.
   - Put the container `XxxScreen` of a screen and its renderer `XxxContent` in one file,
     `XxxScreen.kt`. `XxxScreen` takes the ViewModel and has no previews. `XxxContent` takes the
     UI state, is `private` and has the previews.

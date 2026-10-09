@@ -164,14 +164,3 @@ private fun MenuLightPreview() {
 private fun MenuDarkPreview() {
     AppTheme(darkTheme = true) { MenuSample() }
 }
-
-@Preview
-@Composable
-private fun DropdownMenuPreview() {
-    AppTheme(darkTheme = false) {
-        DropdownMenu(expanded = true, onDismiss = {}) {
-            MenuItem(text = "Pause all", onClick = {}, leadingIcon = AppIcons.Pause)
-            MenuItem(text = "Resume all", onClick = {}, leadingIcon = AppIcons.Play)
-        }
-    }
-}
