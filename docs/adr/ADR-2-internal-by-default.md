@@ -36,6 +36,9 @@ After a split, the compiler shows exactly which declarations must become public 
 
 - To make a declaration public, you need a reason: a caller in another module or in Swift. Add the
   declaration to the table above.
+- The `:designsystem` module is a library for `shared`. Its tokens, icons and components are
+  public, and it enables `explicitApi()`. [ADR-6](ADR-6-design-system-module.md) gives its rules.
+  The table above lists the public API of `shared` only.
 - When you extract a module, decide its public API on purpose. Only then promote the necessary
   declarations from `internal` to `public`.
 
@@ -47,6 +50,6 @@ After a split, the compiler shows exactly which declarations must become public 
 - `internal` declarations are not visible from Swift. Anything that iOS code needs must be public
   by design.
 - Tests in the test source sets of the same module can still see `internal` declarations.
-- Optional next step: after a split, enable `explicitApi()` in the Kotlin block of each library
-  module. The compiler then requires a visibility modifier on every public declaration. Thus
-  nothing becomes public by accident.
+- Enable `explicitApi()` in the Kotlin block of each library module, as `:designsystem` does. The
+  compiler then requires a visibility modifier on every public declaration. Thus nothing becomes
+  public by accident.

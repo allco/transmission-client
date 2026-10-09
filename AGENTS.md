@@ -18,6 +18,7 @@ package is `eu.alsk.transmissionremote`.
 ./gradlew :webApp:wasmJsBrowserDevelopmentRun  # web dev server (Wasm) on http://localhost:8080
 ./gradlew :webApp:jsBrowserDevelopmentRun      # web dev server (JS)
 ./gradlew :shared:compileKotlinJvm :shared:compileAndroidMain   # quick compile check of shared UI
+./gradlew :designsystem:compileKotlinJvm                        # quick compile check of the design system
 ./gradlew :shared:compileKotlinIosSimulatorArm64                # iOS klib compiles on Linux too
 ```
 
@@ -29,10 +30,12 @@ package is `eu.alsk.transmissionremote`.
 
 ## Architecture
 
-- **`shared`** holds all UI and logic in `commonMain`. It is the only module with real code.
-  Its Android target uses the AGP 9 `com.android.kotlin.multiplatform.library` plugin. A
-  `kotlin { android { … } }` block configures this plugin. The old `androidLibrary { }` block is
-  deprecated. The `shared` module also builds the iOS `Shared` framework.
+- **`shared`** holds the features and the logic in `commonMain`. Its Android target uses the
+  AGP 9 `com.android.kotlin.multiplatform.library` plugin. A `kotlin { android { … } }` block
+  configures this plugin. The old `androidLibrary { }` block is deprecated. The `shared` module
+  also builds the iOS `Shared` framework.
+- **`designsystem`** holds the design system: the theme, the tokens, the icons and the generic
+  components (ADR-6). `shared` uses it. The Figma file is the source of its tokens.
 - **`androidApp`**, **`desktopApp`** and **`webApp`** are thin entry points that only call `App()`.
   The iOS equivalent is `shared/src/iosMain/.../MainViewController.kt`. SwiftUI calls it from
   `iosApp/iosApp/ContentView.swift`. With AGP 9, you cannot combine `com.android.application` with
@@ -42,8 +45,9 @@ package is `eu.alsk.transmissionremote`.
 
 The directory `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/` holds these items:
 
-- `App.kt` holds the theme and the top-level navigation. A `rememberSaveable` enum switches from
-  Splash to Connection inside a `Crossfade`. The app uses no navigation library.
+- `App.kt` applies `AppTheme` from `:designsystem` and holds the top-level navigation. A
+  `rememberSaveable` enum switches from Splash to Connection inside a `Crossfade`. The app uses no
+  navigation library.
 - `<feature>/` (`connection/`, `splash/`): each feature has one root package (ADR-1). This
   package holds the ViewModel and the UI state of the feature. `<feature>/views/` holds the
   composables of the feature.
@@ -52,12 +56,21 @@ The directory `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/` holds t
   The ViewModels come from `org.jetbrains.androidx.lifecycle`. A ViewModel keeps the text that
   the user typed and the validation rules private. It exposes the content state
   (`ConnectionContentState`) and sends events (`ConnectionEvent`).
-- `theme/Theme.kt` holds the Material 3 light and dark colour schemes (red seed). The Figma design
-  file uses the same palette as colour variables.
 - In `data/`, `ConnectionRepository` is an in-memory singleton. Thus the app does not persist the
   saved connections yet. The project has no networking code yet.
 
 ## Conventions
+
+Update the docs as you write the code. A change that changes the behaviour, the structure or a
+rule also changes the docs in the same commit:
+
+- `AGENTS.md`, when a command, a module, a package or a rule changes.
+- The ADR that covers the subject (see below).
+- `docs/reference/features.md`, when the status or the package of a feature changes.
+- `docs/reference/design-system.md`, when a token or a component changes.
+- `docs/README.md`, when you add or remove a document.
+
+Do not leave a doc update for a later change.
 
 The ADRs in `docs/adr/` record the patterns that this codebase follows. `docs/README.md` holds the
 index of the ADRs, in groups. Obey the ADRs. Keep the ADRs current when we make decisions:
@@ -82,13 +95,12 @@ This list gives a short summary of each ADR, in groups:
     the event class of the ViewModel in their own files (`ConnectionContentState.kt`,
     `ConnectionEvent.kt`). Put the Composables of the feature in `views/`.
   - Put code that several features use in root packages that have the name of their role
-    (`theme/`, `data/`).
+    (`data/`). Put shared UI in the `:designsystem` module.
   - If a component (ViewModel, view, use case, …) fits in one file, keep it in one file.
   - If a component has parts that only this component uses, put the component and its parts in a
     folder. Name the folder after the component in camelCase, for example `connectionScreen/`.
   - Make this folder only when the package of the component holds a second component. Until then,
-    put the parts directly in the package (today: `connection/views/ConnectionScreen.kt`,
-    `FormField.kt` and `PasswordField.kt`).
+    put the parts directly in the package.
   - If a second component uses a part, move the part higher in the folder tree. The part then
     becomes a component itself.
 - **ADR-2:** Make a declaration `internal` if no other Gradle module and no Swift code calls it.
@@ -110,11 +122,22 @@ This list gives a short summary of each ADR, in groups:
     put config values in a state class.
   - If a Composable has more than two state values (values that change at runtime), make it take
     a `<FunctionName>State` data class. Declare this class at the top of the file of the
-    Composable. The ViewModel or the parent makes it. `FormField` has two state values, `value`
-    and `error`, so it has no state class.
+    Composable. The ViewModel or the parent makes it. `TextField` in `:designsystem` has two state
+    values, `value` and `error`, so it has no state class.
   - The ViewModel makes the state of `XxxContent` directly (`ConnectionViewModel` →
     `ConnectionContentState`). Keep the working data of the ViewModel private. Send a one-time
     signal as an event (`ConnectionEvent`), not as a state field.
+
+- **ADR-6:** The `:designsystem` module holds the design system.
+  - Use its components (`Button`, `TextField`, `TopAppBar`, …) and its tokens (`AppTheme.colors`,
+    `Spacing`, `Radius`, `AppIcons`). Do not use a Material 3 component when the module has one.
+    Do not write colour values in feature code.
+  - Keep the tokens equal to the page "Design System" of the Figma file. Change both in the same
+    change.
+  - Put a component that shows the data of one feature in the `views/` package of that feature,
+    not in the module.
+  - To add a component, add it to Figma, to `component/` with previews, and to
+    `docs/reference/design-system.md`.
 
 **Build**
 
