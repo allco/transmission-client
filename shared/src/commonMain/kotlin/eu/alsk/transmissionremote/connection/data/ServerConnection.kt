@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.data
+package eu.alsk.transmissionremote.connection.data
 
 /** Holds the connection details for the RPC endpoint of a remote Transmission daemon. */
 internal data class ServerConnection(

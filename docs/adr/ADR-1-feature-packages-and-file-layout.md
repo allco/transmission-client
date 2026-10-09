@@ -31,12 +31,14 @@ eu/alsk/transmissionremote/
 │   ├── ConnectionViewModel.kt      ViewModel
 │   ├── ConnectionContentState.kt   the UI state that the ViewModel exposes
 │   ├── ConnectionEvent.kt          the one-time events that the ViewModel sends
+│   ├── data/                       the data of the feature
+│   │   ├── ServerConnection.kt     the server configuration
+│   │   └── ConnectionRepository.kt keeps the server configuration
 │   └── views/                      one screen and no parts, so no component folder (section 3)
 │       └── ConnectionScreen.kt     ConnectionScreen (container) + ConnectionContent (renderer)
-├── splash/                         feature            → later feature:splash
-│   └── views/
-│       └── SplashScreen.kt
-└── data/                           shared data        → later core:data / core:network
+└── splash/                         feature            → later feature:splash
+    └── views/
+        └── SplashScreen.kt
 ```
 
 The shared UI is not in this tree. It is in the `:blocks:designsystem` module
@@ -44,8 +46,8 @@ The shared UI is not in this tree. It is in the `:blocks:designsystem` module
 
 - There is no `ui/` package.
 - Code that more than one feature uses is not a feature. Put it in a package at the root that has
-  the name of its role, for example `data/` for data and networking. Add a new role package only
-  when a second feature needs the code.
+  the name of its role, for example `rpc/` for the RPC client. Add a new role package only when a
+  second feature needs the code. Today there is no role package.
 - Shared UI is in the `:blocks:designsystem` module, not in a role package
   ([ADR-6](ADR-6-design-system-module.md)).
 - Give a feature a name that tells what the user does, for example `connection` or `torrents`. A
@@ -57,7 +59,6 @@ The diagram shows the allowed dependencies between the packages.
 flowchart TD
     App[App.kt] --> connection
     App --> splash
-    connection --> data
     connection --> designsystem[":blocks:designsystem"]
     splash --> designsystem
 ```
@@ -73,12 +74,16 @@ A feature package `<feature>/` holds:
   `ConnectionContentState.kt`.
 - the events that the ViewModel sends, in their own file, for example `ConnectionEvent.kt`.
 - the use cases and other logic that only this feature uses.
+- `data/`, with the data classes and the repositories that only this feature uses, for example
+  `connection/data/ConnectionRepository.kt`. When a second feature needs a class of `data/`, move
+  the class to a role package (section 1).
 - `views/`, with all Composables of the feature and their `<FunctionName>State` classes
   ([ADR-3](ADR-3-composable-conventions.md)).
 
 A feature without a ViewModel, like `splash`, has only `views/`.
 
-The package names are `eu.alsk.transmissionremote.<feature>` and
+The package names are `eu.alsk.transmissionremote.<feature>`,
+`eu.alsk.transmissionremote.<feature>.data` and
 `eu.alsk.transmissionremote.<feature>.views[.<component>]`.
 
 ### 3. A component is one file, or a folder

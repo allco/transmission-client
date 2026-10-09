@@ -391,9 +391,9 @@ have the name of their role.
 |---|---|---|---|
 | RPC client: transport, session id, wire format, errors | *`rpc/`* | Planned | All features that talk to the server |
 | Demo RPC client: the stub for DemoServer, with sample data | *`rpc/`* or *`demo/`* | Planned | DemoServer and all features that talk to the server |
-| Server configuration storage | `data/` | Partial (in memory only) | ServerEditor, ServerList, Splash |
+| Server configuration storage | `connection/data/`. It moves to a role package when ServerList or Splash needs it. | Partial (in memory only) | ServerEditor, ServerList, Splash |
 | Formatters: size, speed, ETA, ratio, dates | *`format/`* | Planned | TorrentList, TorrentDetails, ServerStats |
-| Connection state: online, offline, auth failure | *`rpc/`* or `data/` | Planned | TorrentList, all session features |
+| Connection state: online, offline, auth failure | *`rpc/`* | Planned | TorrentList, all session features |
 | Design system: theme, icons, components | `:blocks:designsystem` module | Done | All features |
 
 ## 8. Open questions

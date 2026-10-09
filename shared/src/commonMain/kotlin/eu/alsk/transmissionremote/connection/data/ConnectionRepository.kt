@@ -1,4 +1,4 @@
-package eu.alsk.transmissionremote.data
+package eu.alsk.transmissionremote.connection.data
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

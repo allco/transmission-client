@@ -60,8 +60,8 @@ The directory `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/` holds t
   The ViewModels come from `org.jetbrains.androidx.lifecycle`. A ViewModel keeps the text that
   the user typed and the validation rules private. It exposes the content state
   (`ConnectionContentState`) and sends events (`ConnectionEvent`).
-- In `data/`, `ConnectionRepository` is an in-memory singleton. Thus the app does not persist the
-  saved connections yet. The project has no networking code yet.
+- In `connection/data/`, `ConnectionRepository` is an in-memory singleton. Thus the app does
+  not persist the saved connections yet. The project has no networking code yet.
 
 ## Conventions
 
@@ -100,7 +100,9 @@ This list gives a short summary of each ADR, in groups:
     the event class of the ViewModel in their own files (`ConnectionContentState.kt`,
     `ConnectionEvent.kt`). Put the Composables of the feature in `views/`.
   - Put code that several features use in root packages that have the name of their role
-    (`data/`). Put shared UI in the `:blocks:designsystem` module.
+    (for example `rpc/`). Put shared UI in the `:blocks:designsystem` module.
+  - Put the data classes and the repositories that only one feature uses in `<feature>/data/`
+    (`connection/data/`). Move a class to a role package when a second feature needs it.
   - If a component (ViewModel, view, use case, …) fits in one file, keep it in one file.
   - If a component has parts that only this component uses, put the component and its parts in a
     folder. Name the folder after the component in camelCase, for example `connectionScreen/`.
