@@ -45,9 +45,8 @@ eu/alsk/transmissionremote/
     `ConnectionContentState.kt`.
   - the events that the ViewModel sends, in a separate file, for example `ConnectionEvent.kt`.
   - use cases and other logic that only this feature uses.
-  - `views/`, with every Composable of the feature, one per file
-    ([ADR-0001](ADR-0001-one-composable-per-file.md)), and with their `<FunctionName>State` classes
-    ([ADR-0003](ADR-0003-state-class-for-composables-with-many-parameters.md)). When `views/` holds
+  - `views/`, with every Composable of the feature, one per file, and with their
+    `<FunctionName>State` classes ([ADR-0010](ADR-0010-composable-conventions.md)). When `views/` holds
     more than one component, a component with parts is a folder of its own
     ([ADR-0005](ADR-0005-file-or-folder-per-component.md)).
 - A feature without a ViewModel, like `splash`, has only `views/`.

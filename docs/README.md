@@ -8,24 +8,44 @@ The [`adr/`](adr/) folder holds the patterns that this codebase follows, and the
 Read these records before you add code. Each record is short and has a number. The number of a
 record never changes.
 
+The table groups the ADRs by topic. In each group, the accepted ADRs come first.
+
+### Composables
+
 | # | Decision | Status |
 |---|---|---|
-| [ADR-0001](adr/ADR-0001-one-composable-per-file.md) | One non-trivial Composable per file, with its previews | Accepted |
+| [ADR-0010](adr/ADR-0010-composable-conventions.md) | Composable conventions: files, previews, screens, state classes, the data that a Composable takes | Accepted |
+| [ADR-0001](adr/ADR-0001-one-composable-per-file.md) | One non-trivial Composable per file, with its previews | Superseded by ADR-0010 |
+| [ADR-0003](adr/ADR-0003-state-class-for-composables-with-many-parameters.md) | Composables with more than two data parameters take a `<FunctionName>State` | Superseded by ADR-0010 |
+| [ADR-0008](adr/ADR-0008-composables-take-only-what-they-use.md) | Composables take exactly the data they use (interface segregation) | Superseded by ADR-0010 |
+
+### Code structure
+
+| # | Decision | Status |
+|---|---|---|
 | [ADR-0002](adr/ADR-0002-internal-by-default.md) | Everything that is not exposed is `internal` | Accepted |
-| [ADR-0003](adr/ADR-0003-state-class-for-composables-with-many-parameters.md) | Composables with more than two data parameters take a `<FunctionName>State` | Accepted |
-| [ADR-0004](adr/ADR-0004-feature-package-layout.md) | Feature packages keep the ViewModel at the root and Composables in `views/` | Superseded by ADR-0006 |
 | [ADR-0005](adr/ADR-0005-file-or-folder-per-component.md) | A component is one file, or a folder named after it when it has parts | Accepted (amended) |
 | [ADR-0006](adr/ADR-0006-features-at-the-package-root.md) | Features are top-level packages, with the ViewModel at the root and Composables in `views/` | Accepted (amended) |
+| [ADR-0004](adr/ADR-0004-feature-package-layout.md) | Feature packages keep the ViewModel at the root and Composables in `views/` | Superseded by ADR-0006 |
+
+### Build
+
+| # | Decision | Status |
+|---|---|---|
 | [ADR-0007](adr/ADR-0007-gradle-daemon-on-corretto-from-direct-links.md) | The Gradle daemon runs on Amazon Corretto, downloaded from direct CDN links | Accepted |
-| [ADR-0008](adr/ADR-0008-composables-take-only-what-they-use.md) | Composables take exactly the data they use (interface segregation) | Accepted |
+
+### Docs
+
+| # | Decision | Status |
+|---|---|---|
 | [ADR-0009](adr/ADR-0009-write-docs-in-simplified-technical-english.md) | Write docs and comments in Simplified Technical English, with Mermaid diagrams | Accepted (amended) |
 
 To add a decision, do these steps:
 
 1. Copy [`adr/template.md`](adr/template.md) to `adr/ADR-<number>-<title-in-kebab-case>.md`.
-2. Use the next four-digit number, for example `ADR-0010-use-ktor-for-rpc.md`.
+2. Use the next four-digit number, for example `ADR-0011-use-ktor-for-rpc.md`.
 3. Complete the sections of the new file.
-4. Add a row for the new ADR to the table above.
+4. Add a row for the new ADR to the table of its group above. Add a group if no group fits.
 
 To change a decision, do these steps:
 

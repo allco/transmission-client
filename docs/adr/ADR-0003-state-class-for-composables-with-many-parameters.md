@@ -1,6 +1,6 @@
 # ADR-0003: Composables with more than two data parameters take a `<FunctionName>State`
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0010](ADR-0010-composable-conventions.md)
 - **Date:** 2026-10-07
 
 ## Context

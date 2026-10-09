@@ -1,7 +1,7 @@
 # ADR-0008: Composables take exactly the data they use (interface segregation)
 
-- **Status:** Accepted. Amended 2026-10-08: the ViewModel makes the content state, and a
-  one-time signal is an event.
+- **Status:** Superseded by [ADR-0010](ADR-0010-composable-conventions.md). Amended 2026-10-08: the ViewModel makes the
+  content state, and a one-time signal is an event.
 - **Date:** 2026-10-08
 
 ## Context

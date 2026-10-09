@@ -31,7 +31,7 @@ early hides the opposite problem.
   it. The part becomes a component of its own: a file, or a folder if it has parts.
 - This rule applies to every kind of component, and it nests. A part that gets parts of its own
   becomes a folder inside the folder of its owner.
-- [ADR-0001](ADR-0001-one-composable-per-file.md) still applies inside a folder: one non-trivial
+- [ADR-0010](ADR-0010-composable-conventions.md) still applies inside a folder: one non-trivial
   Composable per file.
 
 Example: today each feature has one screen, so `views/` holds the screen and its parts directly:

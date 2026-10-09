@@ -1,6 +1,6 @@
 # ADR-0001: One non-trivial Composable per file, with its previews
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0010](ADR-0010-composable-conventions.md)
 - **Date:** 2026-10-07
 
 ## Context
