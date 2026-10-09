@@ -384,16 +384,16 @@ About shows the version data of this app and of the server.
 
 ## 7. Shared parts
 
-These parts are not features. Several features use them. ADR-1 puts them in root packages that
-have the name of their role.
+These parts are not features. Several features use them. ADR-1 puts them in blocks, or in root
+packages that have the name of their role.
 
 | Part | Package | Status | Used by |
 |---|---|---|---|
-| RPC client: transport, session id, wire format, errors | *`rpc/`* | Planned | All features that talk to the server |
-| Demo RPC client: the stub for DemoServer, with sample data | *`rpc/`* or *`demo/`* | Planned | DemoServer and all features that talk to the server |
+| RPC client: transport, session id, wire format, errors | `:blocks:networkclient` | Partial: the transport works. The typed RPC methods do not exist yet. | All features that talk to the server |
+| Demo RPC client: the stub for DemoServer, with sample data | `:blocks:networkclient` or *`demo/`* | Planned | DemoServer and all features that talk to the server |
 | Server configuration storage | `connection/data/`. It moves to a role package when ServerList or Splash needs it. | Partial (in memory only) | ServerEditor, ServerList, Splash |
 | Formatters: size, speed, ETA, ratio, dates | *`format/`* | Planned | TorrentList, TorrentDetails, ServerStats |
-| Connection state: online, offline, auth failure | *`rpc/`* | Planned | TorrentList, all session features |
+| Connection state: online, offline, auth failure | `:blocks:networkclient` or a role package | Planned | TorrentList, all session features |
 | Design system: theme, icons, components | `:blocks:designsystem` module | Done | All features |
 
 ## 8. Open questions
@@ -405,6 +405,6 @@ have the name of their role.
 - Is TurtleMode a separate feature package, or a part of TorrentList?
 - Is ServerInfo a separate screen, a section of ServerSettings, or a part of About?
 - TorrentDetails: does the app use an Options tab, or the menu and the sheets in the Figma design?
-- DemoServer: does the stub live in `rpc/` or in its own `demo/` package?
+- DemoServer: does the stub live in `:blocks:networkclient` or in its own `demo/` package?
 - Does the app need a navigation library when it has more than three screens? Today, `App.kt`
   uses an enum and a `Crossfade`.

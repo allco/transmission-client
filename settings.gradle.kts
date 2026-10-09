@@ -29,6 +29,7 @@ dependencyResolutionManagement {
 }
 
 include(":blocks:designsystem")
+include(":blocks:networkclient")
 include(":shared")
 include(":androidApp")
 include(":desktopApp")

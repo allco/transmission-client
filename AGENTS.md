@@ -19,6 +19,7 @@ package is `eu.alsk.transmissionremote`.
 ./gradlew :webApp:jsBrowserDevelopmentRun      # web dev server (JS)
 ./gradlew :shared:compileKotlinJvm :shared:compileAndroidMain   # quick compile check of shared UI
 ./gradlew :blocks:designsystem:compileKotlinJvm                 # quick compile check of the design system
+./gradlew :blocks:networkclient:jvmTest                         # tests of the network client
 ./gradlew :shared:compileKotlinIosSimulatorArm64                # iOS klib compiles on Linux too
 ```
 
@@ -26,7 +27,7 @@ package is `eu.alsk.transmissionremote`.
   `:shared:embedAndSignAppleFrameworkForXcode` and links the static `Shared` framework. To run the
   app on a device, set `TEAM_ID` in `iosApp/Configuration/Config.xcconfig`.
 - To run the desktop app headless (Xvfb), set `SKIKO_RENDER_API=SOFTWARE`. Xvfb has no GL.
-- The project has no tests and no code linters yet.
+- Only `:blocks:networkclient` has tests. The project has no code linters yet.
 
 ## Architecture
 
@@ -39,6 +40,8 @@ package is `eu.alsk.transmissionremote`.
   - **`blocks/designsystem`** (`:blocks:designsystem`) holds the design system: the theme, the
     tokens, the icons and the generic components (ADR-6). `shared` uses it. The Figma file is the
     source of its tokens.
+  - **`blocks/networkclient`** (`:blocks:networkclient`) sends the RPC requests to the server:
+    Basic authentication, the session id (HTTP 409) and the wire format (ADR-7).
   - Later, each feature moves from `shared` to a block of its own.
 - **`androidApp`**, **`desktopApp`** and **`webApp`** are thin entry points that only call `App()`.
   The iOS equivalent is `shared/src/iosMain/.../MainViewController.kt`. SwiftUI calls it from
@@ -61,7 +64,7 @@ The directory `shared/src/commonMain/kotlin/eu/alsk/transmissionremote/` holds t
   the user typed and the validation rules private. It exposes the content state
   (`ConnectionContentState`) and sends events (`ConnectionEvent`).
 - In `connection/data/`, `ConnectionRepository` is an in-memory singleton. Thus the app does
-  not persist the saved connections yet. The project has no networking code yet.
+  not persist the saved connections yet. No feature uses `:blocks:networkclient` yet.
 
 ## Conventions
 
@@ -94,13 +97,14 @@ This list gives a short summary of each ADR, in groups:
 
 - **ADR-1:** Feature packages, file layout and blocks.
   - Put a new Gradle module of the app in `blocks/`. Give it the Gradle path `:blocks:<name>`.
+    Write the name in lower case with no separators (`networkclient`).
   - The root package holds `App.kt` and one package for each feature. Name each feature package
     after the feature (`connection/`, `splash/`). The project has no `ui/` package.
   - Put the ViewModel of a feature at the root of the feature package. Put the UI state class and
     the event class of the ViewModel in their own files (`ConnectionContentState.kt`,
     `ConnectionEvent.kt`). Put the Composables of the feature in `views/`.
   - Put code that several features use in root packages that have the name of their role
-    (for example `rpc/`). Put shared UI in the `:blocks:designsystem` module.
+    (for example `format/`). Put shared UI in the `:blocks:designsystem` module.
   - Put the data classes and the repositories that only one feature uses in `<feature>/data/`
     (`connection/data/`). Move a class to a role package when a second feature needs it.
   - If a component (ViewModel, view, use case, …) fits in one file, keep it in one file.
@@ -147,6 +151,18 @@ This list gives a short summary of each ADR, in groups:
     not in the module.
   - To add a component, add it to Figma, to `component/` with previews, and to
     `docs/reference/design-system.md`.
+
+**Network**
+
+- **ADR-7:** `:blocks:networkclient` sends all RPC requests. Do not send HTTP requests to the
+  server from a feature.
+  - It uses the Ktor client. The Ktor `Auth` plugin sends Basic authentication on the first
+    request. A Ktor plugin handles HTTP 409: it stores the session id and sends the request again,
+    one time.
+  - `NetworkClient.format()` finds the wire format from the first HTTP 409.
+    `call(method, params)` sends a request in that format.
+  - The failures are the subclasses of `NetworkClientException`.
+  - Test the block with the Ktor `MockEngine`.
 
 **Build**
 

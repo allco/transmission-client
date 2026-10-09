@@ -22,6 +22,12 @@ the groups.
 | [ADR-3](adr/ADR-3-composable-conventions.md) | Composables: files, previews, screens, state classes and the data that a Composable takes |
 | [ADR-6](adr/ADR-6-design-system-module.md) | The design system is the `:blocks:designsystem` module. Figma is the source of its tokens. |
 
+### Network
+
+| # | Decision |
+|---|---|
+| [ADR-7](adr/ADR-7-network-client-block.md) | The `networkclient` block sends the RPC requests: Ktor, the session id plugin and the wire format |
+
 ### Build
 
 | # | Decision |
@@ -50,7 +56,7 @@ To add a decision, do these steps:
 1. Find the group of the decision. If an ADR of the group covers the same subject, add the
    decision to that ADR. Then stop.
 2. Copy [`adr/template.md`](adr/template.md) to `adr/ADR-<number>-<title-in-kebab-case>.md`.
-   Use the next free number, for example `ADR-7-use-ktor-for-rpc.md`.
+   Use the next free number, for example `ADR-8-cache-the-torrent-list.md`.
 3. Complete the sections of the new file.
 4. Add a row for the new ADR to the table of its group. Add a group if no group fits.
 

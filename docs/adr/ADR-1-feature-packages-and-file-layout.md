@@ -46,8 +46,8 @@ The shared UI is not in this tree. It is in the `:blocks:designsystem` module
 
 - There is no `ui/` package.
 - Code that more than one feature uses is not a feature. Put it in a package at the root that has
-  the name of its role, for example `rpc/` for the RPC client. Add a new role package only when a
-  second feature needs the code. Today there is no role package.
+  the name of its role, for example `format/` for the formatters of sizes and speeds. Add a new
+  role package only when a second feature needs the code. Today there is no role package.
 - Shared UI is in the `:blocks:designsystem` module, not in a role package
   ([ADR-6](ADR-6-design-system-module.md)).
 - Give a feature a name that tells what the user does, for example `connection` or `torrents`. A
@@ -131,19 +131,22 @@ or a shared part. The Gradle path of a block is `:blocks:<name>`.
 
 ```
 blocks/
-└── designsystem/        :blocks:designsystem (ADR-6)
+├── designsystem/        :blocks:designsystem (ADR-6)
+└── networkclient/       :blocks:networkclient (ADR-7)
 shared/                  the features as packages; connects the blocks; builds the iOS framework
 androidApp/ desktopApp/ webApp/ iosApp/
 ```
 
-- Today `blocks/` holds one block: `designsystem`
-  ([ADR-6](ADR-6-design-system-module.md)).
+- Today `blocks/` holds two blocks: `designsystem` ([ADR-6](ADR-6-design-system-module.md)) and
+  `networkclient` ([ADR-7](ADR-7-network-client-block.md)).
 - We plan to move each feature and each shared part from `shared` to a block of its own, for
   example `:blocks:connection` or `:blocks:data`. Until then, the features are packages in
   `shared` (sections 1 to 3).
 - A block keeps the package layout of sections 2 and 3. Its root package is the package of the
   feature or the role, for example `eu.alsk.transmissionremote.connection`.
-- Give a block the name of its feature or its role, in camelCase.
+- Give a block the name of its feature or its role, in lower case and with no separators, for
+  example `designsystem` or `networkclient`. The folder, the last part of the Gradle path and the
+  last part of the root package have the same name.
 - The entry-point modules (`androidApp`, `desktopApp`, `webApp`) and `iosApp` stay at the root.
   `shared` stays at the root, too.
 
